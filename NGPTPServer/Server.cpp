@@ -1,5 +1,6 @@
 #include "Server.h"
-#pragma comment(lib,"ws2_32")
+
+//#pragma comment(lib,"ws2_32")
 CServer::CServer()
 {
 	//윈속 초기화 작업
@@ -43,10 +44,8 @@ void CServer::Update()
 }
 void CServer::MakeThreadManager()
 {
-	while (true)
-	{
-		printf("ThreadManager \n");
-	}
+	CThreadManager threadMgr(client_sock[0],client_sock[1]);
+	threadMgr.Update();
 }
 
 CServer::~CServer()

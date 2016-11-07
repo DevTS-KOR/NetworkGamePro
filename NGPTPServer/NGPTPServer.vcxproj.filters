@@ -12,6 +12,9 @@
     <Filter Include="CServer">
       <UniqueIdentifier>{2caecfea-b5bf-4f4b-bb87-ffaab375016d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ThreadMgr">
+      <UniqueIdentifier>{281694ca-0c5e-4aa9-943a-565b7cd79ba4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -20,13 +23,19 @@
     <ClCompile Include="Server.cpp">
       <Filter>CServer</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="ThreadManager.cpp">
+      <Filter>ThreadMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
       <Filter>CServer</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h">
+      <Filter>ThreadMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

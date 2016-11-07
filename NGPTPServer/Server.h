@@ -1,7 +1,6 @@
 #pragma once
-#include <WinSock2.h>
-#include <iostream>
-#pragma comment(lib,"ws2_32")
+#include "ThreadManager.h"
+//#pragma comment(lib,"ws2_32")
 #define SERVERPORT 9000
 
 class CServer
