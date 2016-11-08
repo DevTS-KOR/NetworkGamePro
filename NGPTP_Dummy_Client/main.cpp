@@ -81,9 +81,25 @@ int main(int argc, char * argv[])
 	//네트워크 사용 변수
 	char buf[BUFSIZE + 1];
 	int len;
-
+	cout << "1" << endl;
 	while (true)
 	{
+		cout << "2" << endl;
+		//데이터 받기
+		retval = recv(sock, buf, 10, 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			break;
+		}
+		else if (retval == 0)
+			break;
+
+		///받은 데이터 출력
+		buf[retval] = '\0';
+		printf("[tcp 클라이언트] %d 바이틀르 받았습니다. \n", retval);
+		printf("[받은 데이터] %s \n", buf);
+
 		printf("\n [보낼 데이터] : ");
 		if (fgets(buf, BUFSIZE + 1, stdin) == NULL)
 			break;
@@ -103,21 +119,6 @@ int main(int argc, char * argv[])
 			break;
 		}
 		printf("[TCP 클라이언트] %d 바이트를 보냈습니다. \n", retval);
-
-		//데이터 받기
-		retval = recvn(sock, buf, retval, 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("recv()");
-			break;
-		}
-		else if (retval == 0)
-			break;
-
-		///받은 데이터 출력
-		buf[retval] = '\0';
-		printf("[tcp 클라이언트] %d 바이틀르 받았습니다. \n", retval);
-		printf("[받은 데이터] %s \n", buf);
 	}
 	closesocket(sock);
 
