@@ -1,0 +1,23 @@
+﻿  stdafx.cpp
+  Weather.cpp
+  TimerManager.cpp
+  SceneMgr.cpp
+  Scene.cpp
+  Monster.cpp
+  MainGame.cpp
+  Logo.cpp
+  Lobby.cpp
+  Item.cpp
+  InResult.cpp
+  InGame.cpp
+  GameObject.cpp
+  Bunker.cpp
+  Character.cpp
+  CG_TermProject_Together_Tang_x3.cpp
+  Bullet.cpp
+  Building.cpp
+  BitmapMgr.cpp
+  코드를 생성하고 있습니다...
+d:\programming\networkgametermproject\networkgamepro\ngptpclient\cg_termproject_together_tang_x3\bitmapmgr.cpp(398): warning C4715: 'CBitmapMgr::GetTexture': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  CG_TermProject_Together_Tang_x3.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPClient\Debug\CG_TermProject_Together_Tang_x3.exe
+  CG_TermProject_Together_Tang_x3.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPClient\Debug\CG_TermProject_Together_Tang_x3.pdb (Full PDB)

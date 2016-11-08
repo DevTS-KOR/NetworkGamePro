@@ -42,8 +42,7 @@ GLvoid CBuilding::Draw()
 		glEnable(GL_TEXTURE_2D);
 		//DrawCube(0, 30, 0, 30, 30, 30, m_pMonster[MONSTER_CAT], 64, 64);
 		
-		DrawCube((MAP_SIZE / 2 - 200)/2, 350, 100, MAP_SIZE / 2 - 200, 700, 200, m_pBuilding[0], 64, 64,0);
-		DrawCube(MAP_SIZE / 2,700, 100, 400, 400, 200, m_pBuilding[0], 64, 64,0);
+	
 		//glTranslatef(MAP_SIZE / 2 + 120, 790, 170);
 		glPushMatrix();
 		{
@@ -73,18 +72,23 @@ GLvoid CBuilding::Draw()
 		glPopMatrix();
 
 		DrawCube((MAP_SIZE / 2 - 200) / 2 +( MAP_SIZE / 2 + 200), 350, 100, MAP_SIZE / 2 - 200, 700, 200, m_pBuilding[0], 64, 64,0);
-
 		DrawCube(0, 300, MAP_SIZE / 2, 100 , 300, 100, m_pBuilding[0], 64, 64, 0);
+		DrawCube((MAP_SIZE / 2 - 200) / 2, 350, 100, MAP_SIZE / 2 - 200, 700, 200, m_pBuilding[0], 64, 64, 0);
+		DrawCube(MAP_SIZE / 2, 700, 100, 400, 400, 200, m_pBuilding[0], 64, 64, 0);
+
 		glPushMatrix();
 		{
 			glRotatef(90, 1, 0, 0);
-			DrawCube(0, 300, MAP_SIZE / 2, 100, 300, 100, m_pBuilding[0], 64, 64, 0);
+			//DrawCube(0, 300, MAP_SIZE / 2, 100, 300, 100, m_pBuilding[0], 64, 64, 0);
 		}
 		glPopMatrix();
 
+
+		DrawContainer((MAP_SIZE / 2) + 300, 100, MAP_SIZE / 2, 200, 200, 500, m_pContainer, 512, 256, 3);
+		
 		glPushMatrix();
 		{
-			float fX = (MAP_SIZE / 2)+300;
+			/*float fX = (MAP_SIZE / 2)+300;
 			float fY = 100;
 			float fZ = MAP_SIZE / 2;
 			float fWidth = 200;
@@ -151,14 +155,15 @@ GLvoid CBuilding::Draw()
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
 			glEnd();
-			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_2D);*/
 		}
 		glPopMatrix();
 
+		DrawContainer((MAP_SIZE / 4) + 500, 100, (MAP_SIZE / 2) + 800, 200, 200, 500, m_pContainer, 512, 256, 3);
 
 		glPushMatrix();
 		{
-			float fX = (MAP_SIZE / 4) + 500;
+			/*float fX = (MAP_SIZE / 4) + 500;
 			float fY = 100;
 			float fZ = (MAP_SIZE / 2) + 800;
 			float fWidth = 200;
@@ -225,13 +230,15 @@ GLvoid CBuilding::Draw()
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
 			glEnd();
-			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_2D);*/
 		}
 		glPopMatrix();
 
+		DrawContainer((MAP_SIZE / 2) + 100, 100, MAP_SIZE / 2, 200, 200, 500, m_pContainer, 512, 256, 3);
+
 		glPushMatrix();
 		{
-			float fX = (MAP_SIZE / 2) + 100;
+			/*float fX = (MAP_SIZE / 2) + 100;
 			float fY = 100;
 			float fZ = MAP_SIZE / 2;
 			float fWidth = 200;
@@ -298,14 +305,16 @@ GLvoid CBuilding::Draw()
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
 			glEnd();
-			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_2D);*/
 
 		}
 		glPopMatrix();
 
+		DrawContainer((MAP_SIZE / 2) + 800, 100, (MAP_SIZE / 2) + 600, 200, 200, 500, m_pContainer, 512, 256, 3);
+
 		glPushMatrix();
 		{
-			float fX = (MAP_SIZE / 2) + 800;
+			/*float fX = (MAP_SIZE / 2) + 800;
 			float fY = 100;
 			float fZ = (MAP_SIZE / 2) + 600;
 			float fWidth = 200;
@@ -372,14 +381,16 @@ GLvoid CBuilding::Draw()
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
 			glEnd();
-			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_2D);*/
 
 		}
 		glPopMatrix();
 
+		DrawContainer((MAP_SIZE / 2) + 700, 100, (MAP_SIZE / 2) - 300, 200, 200, 500, m_pContainer, 512, 256, 3);
+
 		glPushMatrix();
 		{
-			float fX = (MAP_SIZE / 2) + 700;
+			/*float fX = (MAP_SIZE / 2) + 700;
 			float fY = 100;
 			float fZ = (MAP_SIZE / 2) - 300;
 			float fWidth = 200;
@@ -446,7 +457,7 @@ GLvoid CBuilding::Draw()
 			glTexCoord2f(0.0f, 1.0f);
 			glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
 			glEnd();
-			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_2D);*/
 
 		}
 		glPopMatrix();
@@ -475,7 +486,7 @@ GLvoid CBuilding::SetType(BuildType _eType)
 {
 	glEnable(GL_TEXTURE_CUBE_MAP);
 }
-
+					
 GLvoid CBuilding::DrawCube(float fX, float fY, float fZ, float fWidth, float fHigh, float fDepth, GLubyte *pBytes[], float fXsize, float fYsize)
 {
 	//菊搁积己
@@ -714,6 +725,96 @@ GLvoid CBuilding::DrawCube(float fX, float fY, float fZ, float fWidth, float fHi
 		glEnable(GL_TEXTURE_2D);
 	}
 	
+}
+
+GLvoid CBuilding::DrawContainer(float fX, float fY, float fZ, float fWidth, float fHigh, float fDepth, GLubyte ** pByte, float fXsize, float fYsize, int _type)
+{
+	//菊搁积己
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, fXsize, fYsize, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pByte[1]);
+	glColor3f(1.0f, 1.f, 1.f);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(fX - (fWidth / 2), fY - (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0, 0.0f);
+	glVertex3f(fX + (fWidth / 2), fY - (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0, 0.5);
+	glVertex3f(fX + (fWidth / 2), fY + (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(0.0f, 0.5);
+	glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ + (fDepth / 2));
+	glEnd();
+
+	//缔搁
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, fXsize, fYsize, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pByte[1]);
+	glColor3f(1.0f, 1.f, 1.f);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(fX + (fWidth / 2), fY - (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(fX - (fWidth / 2), fY - (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(1.0f, 0.5f);
+	glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(0.0f, 0.5f);
+	glVertex3f(fX + (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
+	glEnd();
+
+	//坷弗率 糠搁
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, fXsize, fYsize, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, m_pContainer[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, fXsize, fYsize, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pByte[0]);
+	glColor3f(1.0f, 1.f, 1.f);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(fX + (fWidth / 2), fY - (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(fX + (fWidth / 2), fY - (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(fX + (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(fX + (fWidth / 2), fY + (fHigh / 2), fZ + (fDepth / 2));
+	glEnd();
+
+
+	//哭率 糠搁
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, fXsize, fYsize, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pByte[0]);
+	glColor3f(1.0f, 1.f, 1.f);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(fX - (fWidth / 2), fY - (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(fX - (fWidth / 2), fY - (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
+	glEnd();
+
+	//关搁积己
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, fXsize, fYsize, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pByte[0]);
+	glColor3f(1.0f, 1.f, 1.f);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(fX - (fWidth / 2), fY - (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(fX + (fWidth / 2), fY - (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(fX + (fWidth / 2), fY - (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(fX - (fWidth / 2), fY - (fHigh / 2), fZ - (fDepth / 2));
+	glEnd();
+
+	//拉搁积己
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, fXsize, fYsize, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pByte[0]);
+	glColor3f(1.0f, 1.f, 1.f);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(fX + (fWidth / 2), fY + (fHigh / 2), fZ + (fDepth / 2));
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(fX + (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(fX - (fWidth / 2), fY + (fHigh / 2), fZ - (fDepth / 2));
+	glEnd();
+	//glDisable(GL_TEXTURE_2D);
 }
 
 void CBuilding::drawBox(GLfloat size, GLenum type)

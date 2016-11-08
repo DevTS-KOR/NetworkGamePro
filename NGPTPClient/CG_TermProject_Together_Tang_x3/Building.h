@@ -16,6 +16,7 @@ public:
 	virtual	bool	Collision();
 	virtual GLvoid DrawCube(float fX, float fY, float fZ, float fWidth, float fHigh, float fDepth, GLubyte *pBytes[], float fXsize, float fYsize)override;
 	GLvoid DrawCube(float fX, float fY, float fZ, float fWidth, float fHigh, float fDepth, GLubyte *pByte, float fXsize, float fYsize,int _type);
+	GLvoid DrawContainer(float fX, float fY, float fZ, float fWidth, float fHigh, float fDepth, GLubyte **pByte, float fXsize, float fYsize, int _type);
 
 	void drawBox(GLfloat size, GLenum type);
 public:
