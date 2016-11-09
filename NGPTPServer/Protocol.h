@@ -10,7 +10,7 @@ struct InitInfo						//게임의 초기값을 담당하는 구조체
 	Vec3 Player1Pos;				//첫번째 플레이어의 위치를 담당
 	Vec3 Player2Pos;				//두번째 플레이어의 위치를 담당
 	Vec3 MonsterPos[10]	;			//몬스터들의 위치정보를 담당
-	Vec3 containerPos[4];
+	//Vec3 containerPos[4];			// 필요한가?
 };
 
 enum DataType						//데이터 타입의 구분 변수를 가진 열거형
@@ -60,6 +60,12 @@ struct MonsterInfo					//몬스터의 정보를 담당하는 구조체
 	int hp = 3;						//몬스터에 체력을 담당, 
 									//기본적으로 3에 체력을 가지며 총알에 한발 맞으면, 체력이 1이 깎인다.
 };
+
+struct ContainerInfo				//컨테이너 위치값 구조체
+{
+	Vec3 position;					//컨테이너의 중심 위치값.
+};
+
 struct ResultInfo					// 결과 조건을 보내기 위한 구조체
 {
 	int killCount;					// 플레이어가 몇 마리의 몬스터를 잡았는지 

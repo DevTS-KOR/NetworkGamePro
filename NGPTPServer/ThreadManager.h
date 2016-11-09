@@ -26,6 +26,8 @@ private:
 	static std::vector<MonsterInfo> monsterVector;	// Monster정보 관리 배열. Maxsize = 10.
 	static std::vector<BulletInfo> bulletVector;	// Bullet 정보 관리 배열. 클라로부터 생성 메세지를 받으면 
 													// Insert해주고, 업데이트해줌.
+	static std::vector<ContainerInfo> conVector;	// Container정보 관리 배열. 충돌체크에 사용된다.
+
 	int retval;										// send, recv에 return value 값들.
 	int playerIndex;
 	InitInfo initInform1, initInform2;				// 1은 player1, 2는 player2

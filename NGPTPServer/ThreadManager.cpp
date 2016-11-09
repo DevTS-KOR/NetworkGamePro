@@ -27,14 +27,63 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 
 void CThreadManager::Init()
 {
+	//플레이어 위치값 공유자원들 초기화.
 	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ -1500,100,1900 },false });
 	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ -1500,100,1900 },false });
+
+	// 컨테이너 위치값 들 서버에 초기화 -> 충돌체크에 사용될것/
+	conVector.push_back(ContainerInfo{ 0,300,1000 });
+	conVector.push_back(ContainerInfo{ 1500,300,0 });
+	conVector.push_back(ContainerInfo{ 0,300,-1000 });
+	conVector.push_back(ContainerInfo{ -1500,300,0 });
+
+	// 몬스터들 위치값 초기화
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{-1000,100,-1800},3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ -1000,100,-1000 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ 1000,100,-1800 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ 1000,100,-1000 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ -500,100,-500 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ 0,100,0 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ 500,100,500 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ -1000,100,1000 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ 1000,100,1000 },3 });
+	monsterVector.push_back(MonsterInfo{ DataType::MONSTER,Vec3{ 0,100,1500 },3 });
+
+	//양클라이언트에 보낼 초기값들에 초기화.
+	// Player1,2
+	initInform1.playerIndex = 1;
+	initInform2.playerIndex = 2;
 
 	initInform1.Player1Pos = Vec3{ -1500, 100, 1900 };
 	initInform1.Player2Pos = Vec3{ 1500, 100, 1900 };
 
 	initInform2.Player1Pos = Vec3{ -1500, 100, 1900 };
 	initInform2.Player2Pos = Vec3{ 1500, 100, 1900 };
+
+	//Monsters
+	initInform1.MonsterPos[0] = Vec3{ -1000,100,-1800 };
+	initInform1.MonsterPos[1] = Vec3{ -1000,100,-1000 };
+	initInform1.MonsterPos[2] = Vec3{ 1000,100,-1800 };
+	initInform1.MonsterPos[3] = Vec3{ 1000,100,-1000 };
+	initInform1.MonsterPos[4] = Vec3{ -500,100,-500 };
+	initInform1.MonsterPos[5] = Vec3{ 0,100,0 };
+	initInform1.MonsterPos[6] = Vec3{ 500,100,500 };
+	initInform1.MonsterPos[7] = Vec3{ -1000,100,1000 };
+	initInform1.MonsterPos[8] = Vec3{ 1000,100,1000 };
+	initInform1.MonsterPos[9] = Vec3{ 0,100,1500 };
+
+	initInform2.MonsterPos[0] = Vec3{ -1000,100,-1800 };
+	initInform2.MonsterPos[1] = Vec3{ -1000,100,-1000 };
+	initInform2.MonsterPos[2] = Vec3{ 1000,100,-1800 };
+	initInform2.MonsterPos[3] = Vec3{ 1000,100,-1000 };
+	initInform2.MonsterPos[4] = Vec3{ -500,100,-500 };
+	initInform2.MonsterPos[5] = Vec3{ 0,100,0 };
+	initInform2.MonsterPos[6] = Vec3{ 500,100,500 };
+	initInform2.MonsterPos[7] = Vec3{ -1000,100,1000 };
+	initInform2.MonsterPos[8] = Vec3{ 1000,100,1000 };
+	initInform2.MonsterPos[9] = Vec3{ 0,100,1500 };
+
+
 }
 
 void CThreadManager::err_display(char * msg)
