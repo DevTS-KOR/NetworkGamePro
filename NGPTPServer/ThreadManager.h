@@ -14,7 +14,7 @@ public:
 											// 인자값으로는 각각의 클라이언트 소켓을 받음.
 	void DeleteThread();
 	void AddBullet();
-
+	void Init();
 	void err_quit(char * msg);
 	void err_display(char * msg);
 
@@ -27,6 +27,7 @@ private:
 	static std::vector<BulletInfo> bulletVector;	// Bullet 정보 관리 배열. 클라로부터 생성 메세지를 받으면 
 													// Insert해주고, 업데이트해줌.
 	int retval;										// send, recv에 return value 값들.
-
+	int playerIndex;
+	InitInfo initInform1, initInform2;				// 1은 player1, 2는 player2
 };
 

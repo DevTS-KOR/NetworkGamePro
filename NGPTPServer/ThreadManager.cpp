@@ -9,8 +9,10 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 	client_sock[0] = client_socket1;
 	client_sock[1] = client_socket2;
 
-	playerVector.push_back(PlayerInfo{ 1,Vec3{ 2,2,2 },Vec3{ 3,3,3 },false });
-	playerVector.push_back(PlayerInfo{ 4,Vec3{ 5,5,5 },Vec3{ 6,6,6 },true });
+	playerIndex = 1;
+	Init();
+
+	//Player1 Player2 순임
 
 	hThreadHandle[0] = CreateThread(
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)client_sock[0], CREATE_SUSPENDED, NULL);
@@ -21,8 +23,20 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)0, CREATE_SUSPENDED, NULL);
 	hThreadHandle[1] = CreateThread(
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)1, CREATE_SUSPENDED, NULL);*/
-
 }
+
+void CThreadManager::Init()
+{
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ -1500,100,1900 },false });
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ -1500,100,1900 },false });
+
+	initInform1.Player1Pos = Vec3{ -1500, 100, 1900 };
+	initInform1.Player2Pos = Vec3{ 1500, 100, 1900 };
+
+	initInform2.Player1Pos = Vec3{ -1500, 100, 1900 };
+	initInform2.Player2Pos = Vec3{ 1500, 100, 1900 };
+}
+
 void CThreadManager::err_display(char * msg)
 {
 	LPVOID lpMsgBuf;
@@ -63,7 +77,6 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 		//send
 		//std::cout << playerVector[a].PlayerPos.x << std::endl;
 		std::cout << "hello" << std::endl;
-
 	}
 }
 
@@ -86,7 +99,7 @@ void CThreadManager::Update()
 	std::cout << "ㅅㅂ" << std::endl;
 	for (int i = 0; i<2; ++i)
 	{
-		retval = recv(client_sock[i], buf, sizeof(len), 0);			//게임 초기값 전송.
+		retval = recv(client_sock[i], buf, sizeof(len), 0);			//준비완료 메세지 수신.
 		if (retval == SOCKET_ERROR)
 		{
 			err_display("recv()");
