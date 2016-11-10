@@ -1,6 +1,10 @@
 #pragma once
+
 struct Vec3							//X, Y, Z. 
 {
+	Vec3(){}
+	Vec3(float x1, float y1,float z1 ):x(x1),y(y1),z(z1)
+	{}
 	float x, y, z;
 };
 
@@ -70,4 +74,8 @@ struct ResultInfo					// 결과 조건을 보내기 위한 구조체
 {
 	int killCount;					// 플레이어가 몇 마리의 몬스터를 잡았는지 
 	int SceneState;					// 양쪽 클라이언트에 결과화면을 띄우기 위해 보내는 변수
+};
+struct MapSizeInfo
+{
+	
 };

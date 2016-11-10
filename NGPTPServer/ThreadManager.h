@@ -1,9 +1,6 @@
 #pragma once
-#pragma comment(lib, "ws2_32")
-#include <WinSock2.h>
-#include <iostream>
-#include <vector>
-#include "Protocol.h"
+
+#include "Operator.h"
 class CThreadManager
 {
 public:
@@ -13,11 +10,9 @@ public:
 	static DWORD WINAPI ThreadFunc(LPVOID);	// 각각의 클라이언트 송수신을 위한 스레드함수.
 											// 인자값으로는 각각의 클라이언트 소켓을 받음.
 	void DeleteThread();
-	void AddBullet();
 	void Init();
 	void err_quit(char * msg);
 	void err_display(char * msg);
-
 	~CThreadManager();
 private:
 	SOCKET client_sock[2];							// 생성자로 받아오는 두개의 소켓인자로 초기화됨.
@@ -30,6 +25,9 @@ private:
 
 	int retval;										// send, recv에 return value 값들.
 	int playerIndex;
-	InitInfo initInform1, initInform2;				// 1은 player1, 2는 player2
+	InitInfo initInform;							// 1은 player1, 2는 player2
+	char buf[512];									// 버퍼 변수.
+
+	COperator calculate{&playerVector};
 };
 
