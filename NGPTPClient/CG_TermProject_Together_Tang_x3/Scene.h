@@ -19,7 +19,6 @@ public:
 	virtual GLvoid	Mouse          (int button, int state, int x, int y) = 0;
 	virtual GLvoid	MouseMotionFunc(int x, int y) = 0;
 	virtual GLvoid	Release        (GLvoid) = 0;
-
 public:
 	CScene();
 	~CScene();

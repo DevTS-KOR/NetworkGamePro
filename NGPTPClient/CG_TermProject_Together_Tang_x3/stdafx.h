@@ -5,6 +5,7 @@
 
 #pragma once
 #pragma comment(lib,"winmm") 
+#pragma comment(lib, "ws2_32")
 
 #include "targetver.h"
 
@@ -16,11 +17,14 @@
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 #include <gl\glew.h>
 #include <gl/glut.h> 
-#include <iostream>
+#include <Winsock2.h>
 #include <windows.h>
+#include <iostream>
+#include <stdlib.h>
 #include <random>
 #include <ctime>
 #include <cmath>
 #include <vector>
 #include <mmsystem.h>
+
 using namespace std;

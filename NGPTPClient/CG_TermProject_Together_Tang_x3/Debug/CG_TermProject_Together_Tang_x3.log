@@ -11,9 +11,9 @@
   InResult.cpp
   InGame.cpp
   GameObject.cpp
-  Bunker.cpp
   Character.cpp
   CG_TermProject_Together_Tang_x3.cpp
+  Bunker.cpp
   Bullet.cpp
   Building.cpp
   BitmapMgr.cpp

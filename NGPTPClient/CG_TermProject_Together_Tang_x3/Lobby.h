@@ -16,7 +16,6 @@ public:
 	virtual GLvoid	Release();
 
 
-
 public:
 	CLobby();
 	~CLobby();
