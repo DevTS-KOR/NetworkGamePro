@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NGPTPServer", "NGPTPServer.vcxproj", "{636E36E3-576D-4681-9C00-A39C51AD9672}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NGPTP_Dummy_Client", "..\NGPTP_Dummy_Client\NGPTP_Dummy_Client.vcxproj", "{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{636E36E3-576D-4681-9C00-A39C51AD9672}.Release|x64.Build.0 = Release|x64
 		{636E36E3-576D-4681-9C00-A39C51AD9672}.Release|x86.ActiveCfg = Release|Win32
 		{636E36E3-576D-4681-9C00-A39C51AD9672}.Release|x86.Build.0 = Release|Win32
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Debug|x64.ActiveCfg = Debug|x64
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Debug|x64.Build.0 = Debug|x64
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Debug|x86.ActiveCfg = Debug|Win32
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Debug|x86.Build.0 = Debug|Win32
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Release|x64.ActiveCfg = Release|x64
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Release|x64.Build.0 = Release|x64
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Release|x86.ActiveCfg = Release|Win32
+		{30D87CE9-BC11-4C45-8568-FDF1BB0511FC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
