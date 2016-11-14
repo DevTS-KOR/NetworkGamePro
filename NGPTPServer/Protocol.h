@@ -79,3 +79,10 @@ struct MapSizeInfo
 {
 	
 };
+
+//-------내가 필요해서 만든부분-------
+struct ThreadParam
+{
+	SOCKET clientsock;
+	int clientInex;		
+};

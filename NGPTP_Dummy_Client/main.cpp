@@ -86,7 +86,7 @@ int main(int argc, char * argv[])
 	{
 		cout << "2" << endl;
 		//데이터 받기
-		retval = recv(sock, buf, 10, 0);
+		retval = recv(sock, buf, BUFSIZE, 0);
 		if (retval == SOCKET_ERROR)
 		{
 			err_display("recv()");

@@ -12,18 +12,16 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 {
 	client_sock[0] = client_socket1;
 	client_sock[1] = client_socket2;
-
 	playerIndex = 1;
 	//Init();
 
 	//Player1 Player2 순임
-
+	
 	hThreadHandle[0] = CreateThread(
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)client_sock[0], CREATE_SUSPENDED, NULL);
+
 	hThreadHandle[1] = CreateThread(
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)client_sock[1], CREATE_SUSPENDED, NULL);
-
-
 }
 
 void CThreadManager::Init()
@@ -31,8 +29,8 @@ void CThreadManager::Init()
 	
 	//플레이어 위치값 공유자원들 초기화.
 	playerVector.reserve(2);
-	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ -1500,100,1900 },false });
-	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ -1500,100,1900 },false });
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ -1500,100,1900 },Vec3{ 0,0,0 },false });
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ 0,0,0 },false });
 
 	// 컨테이너 위치값 들 서버에 초기화 -> 충돌체크에 사용될것/
 	conVector.reserve(4);
@@ -82,7 +80,6 @@ void CThreadManager::Init()
 	initInform.MonsterPos[8] = Vec3{ 1000,100,1000 };
 	initInform.MonsterPos[9] = Vec3{ 0,100,1500 };
 }
-
 void CThreadManager::err_display(char * msg)
 {
 	LPVOID lpMsgBuf;
@@ -108,21 +105,28 @@ void CThreadManager::err_quit(char * msg)
 	exit(1);
 }
 
-DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
+DWORD WINAPI CThreadManager::ThreadFunc(void* param)
 {
 	SOCKET client_sock = (SOCKET)param;
-	//int a = (int)param;
 	SOCKADDR_IN clientaddr;
-	int addrlen;
 	//getpeername(client_sock,(SOCKADDR*)&clientaddr,&addrlen);
+
+	COperator calculate = { &playerVector, &monsterVector, &bulletVector };
+
+	int retval;			//return value
+	char buf[BUFSIZE];
+	
+	//std::cout << thisIndex << std::endl;
 
 	while (true)				//이 함수내에서 send,recv 작업이 이루어짐.
 	{
-		//recv
-		//Operate
-		//send
-		std::cout << "hello" << std::endl;
+		retval = recv(client_sock, buf, sizeof(buf), 0);
+
+		//오류검사문 필요
+		calculate.Update();
+		retval = send(client_sock, buf, sizeof(buf), 0);
 	}
+	return 0;
 }
 
 void CThreadManager::Update()
@@ -151,11 +155,14 @@ void CThreadManager::Update()
 			err_display("recv()");
 		}
 	}
+	std::cout << "준비완료 메세지 수신 완료" << std::endl;
+
 	std::cout << "씬전환 메세지 송신" << std::endl;
 
-	SceneInfo changeGameScene;				
+	SceneInfo changeGameScene;			//8byte 전송.	
 	changeGameScene.type = DataType::SCENE;
 	changeGameScene.SceneState = SceneList::INGAME;
+
 	for (int i = 0; i < 2; ++i)				//send - 게임씬으로 넘어가라는 메세지 전송
 	{
 		retval = send(client_sock[i], (char*)&changeGameScene, sizeof(SceneInfo), 0);
@@ -169,8 +176,9 @@ void CThreadManager::Update()
 	//ResumeThread 해주기전에 게임 초기값들 전송해주고 게임준비완료 되면 ResumeThread 해준다.
 	ResumeThread(hThreadHandle[0]);
 	ResumeThread(hThreadHandle[1]);
-
+	std::cout << "쓰레드 두개 종료?" << std::endl;
 	WaitForMultipleObjects(2,hThreadHandle,TRUE,INFINITE);
+	std::cout << "쓰레드 두개 종료!" << std::endl;
 }
 
 CThreadManager::~CThreadManager()

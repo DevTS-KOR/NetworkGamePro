@@ -27,7 +27,5 @@ private:
 	int playerIndex;
 	InitInfo initInform;							// 1은 player1, 2는 player2
 	char buf[512];									// 버퍼 변수.
-
-	COperator calculate{&playerVector};
 };
 
