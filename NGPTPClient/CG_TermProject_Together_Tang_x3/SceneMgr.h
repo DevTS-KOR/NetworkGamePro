@@ -7,8 +7,13 @@ class CSceneMgr
 {
 	static CSceneMgr*		m_pInst;
 	CScene*					m_pScene;
-
-
+	// 윈속 초기화
+	WSADATA					wsa;
+	// socket()
+	SOCKET					sock;
+	// connect()
+	SOCKADDR_IN				serveraddr;
+	int						retval;
 public:
 	void SetScene(SceneList _eID,CBitmapMgr* _pBitmapMgr);
 
@@ -26,7 +31,11 @@ public:
 	GLvoid	MouseMotionFunc(int x, int y);
 	GLvoid	Release();
 	GLvoid	SpecialKeyboardUp(int key, int x, int y);
-
+	// 소켓 함수 오류 출력 후 종료
+	void err_quit(char *msg);
+	// 소켓 함수 오류 출력
+	void err_display(char *msg);
+	GLvoid ConnectServer();
 public:
 	CSceneMgr();
 	~CSceneMgr();

@@ -7,6 +7,7 @@ extern	int		g_iWindow_Width;
 extern int		g_iWindow_Height;
 CLobby::CLobby()
 {
+	//CSceneMgr::CSceneMgr();
 }
 
 
@@ -82,6 +83,7 @@ GLvoid CLobby::Release()
 
 GLvoid CLobby::Initialize(CBitmapMgr* _pBitmapMgr)
 {
+	CSceneMgr::GetInst()->ConnectServer();
 	m_pBitmapMgr = _pBitmapMgr;
 	m_iTextures = m_pBitmapMgr->GetTexture(SCENE_LOBBY)[0];
 //	m_dwTime = GetTickCount();
