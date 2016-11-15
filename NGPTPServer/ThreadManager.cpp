@@ -22,6 +22,9 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 
 	hThreadHandle[1] = CreateThread(
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)client_sock[1], CREATE_SUSPENDED, NULL);
+
+	hMonPosUpdateHandle = CreateThread(
+		NULL, 0, CThreadManager::MonsterPosUpdate, NULL, CREATE_SUSPENDED, NULL);
 }
 
 void CThreadManager::Init()
@@ -79,6 +82,8 @@ void CThreadManager::Init()
 	initInform.MonsterPos[7] = Vec3{ -1000,100,1000 };
 	initInform.MonsterPos[8] = Vec3{ 1000,100,1000 };
 	initInform.MonsterPos[9] = Vec3{ 0,100,1500 };
+
+	initInform.playerIndex = 1;
 }
 void CThreadManager::err_display(char * msg)
 {
@@ -104,8 +109,22 @@ void CThreadManager::err_quit(char * msg)
 	LocalFree(lpMsgBuf);
 	exit(1);
 }
+DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID)
+{
+	std::vector<MonsterInfo>::iterator monsterInfoIter;
+	monsterInfoIter = monsterVector.begin();
+	std::cout << "monsterPosUpdate" << std::endl;
 
-DWORD WINAPI CThreadManager::ThreadFunc(void* param)
+	while(true)
+	{
+		for(int i = 0;i<10;++i)
+		{
+			monsterVector[i].MonsterPos.x += 1;
+			std::cout << monsterVector[i].MonsterPos.x << std::endl;
+		}
+	}
+}
+DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 {
 	SOCKET client_sock = (SOCKET)param;
 	SOCKADDR_IN clientaddr;
@@ -176,9 +195,13 @@ void CThreadManager::Update()
 	//ResumeThread 해주기전에 게임 초기값들 전송해주고 게임준비완료 되면 ResumeThread 해준다.
 	ResumeThread(hThreadHandle[0]);
 	ResumeThread(hThreadHandle[1]);
-	std::cout << "쓰레드 두개 종료?" << std::endl;
+
+	ResumeThread(hMonPosUpdateHandle);
+
+	std::cout << "쓰레드 3개 종료?" << std::endl;
 	WaitForMultipleObjects(2,hThreadHandle,TRUE,INFINITE);
-	std::cout << "쓰레드 두개 종료!" << std::endl;
+	WaitForSingleObject(hMonPosUpdateHandle, INFINITE);
+	std::cout << "쓰레드 3개 종료!" << std::endl;
 }
 
 CThreadManager::~CThreadManager()
