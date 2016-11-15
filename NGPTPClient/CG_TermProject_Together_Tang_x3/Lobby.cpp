@@ -83,7 +83,9 @@ GLvoid CLobby::Release()
 
 GLvoid CLobby::Initialize(CBitmapMgr* _pBitmapMgr)
 {
+	InitInfo aaa;
 	CSceneMgr::GetInst()->ConnectServer();
+	CSceneMgr::GetInst()->RecvInitInfo(aaa);
 	m_pBitmapMgr = _pBitmapMgr;
 	m_iTextures = m_pBitmapMgr->GetTexture(SCENE_LOBBY)[0];
 //	m_dwTime = GetTickCount();

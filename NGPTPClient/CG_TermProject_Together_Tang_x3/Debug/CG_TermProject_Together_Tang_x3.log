@@ -1,12 +1,2 @@
-﻿  SceneMgr.cpp
-d:\programming\networkgametermproject\networkgamepro\ngptpclient\cg_termproject_together_tang_x3\scenemgr.cpp(120): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1850): note: 'inet_addr' 선언을 참조하십시오.
-  Lobby.cpp
-  코드를 생성하고 있습니다...
-  건너뛰고 있습니다... (관련된 변경 내용 없음)
-  MainGame.cpp
-  Logo.cpp
-  InResult.cpp
-  InGame.cpp
-  CG_TermProject_Together_Tang_x3.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPClient\Debug\CG_TermProject_Together_Tang_x3.exe
+﻿  CG_TermProject_Together_Tang_x3.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPClient\Debug\CG_TermProject_Together_Tang_x3.exe
   CG_TermProject_Together_Tang_x3.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPClient\Debug\CG_TermProject_Together_Tang_x3.pdb (Full PDB)

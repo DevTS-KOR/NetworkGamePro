@@ -14,8 +14,10 @@ class CSceneMgr
 	// connect()
 	SOCKADDR_IN				serveraddr;
 	int						retval;
+	/////////////////////////////////////////////
+	InitInfo strInitInfo;
 public:
-	void SetScene(SceneList _eID,CBitmapMgr* _pBitmapMgr);
+	void SetScene(SceneList _eID, CBitmapMgr* _pBitmapMgr);
 
 public:
 	static CSceneMgr* GetInst(void);
@@ -36,6 +38,7 @@ public:
 	// 소켓 함수 오류 출력
 	void err_display(char *msg);
 	GLvoid ConnectServer();
+	void RecvInitInfo(InitInfo _InitInfo);
 public:
 	CSceneMgr();
 	~CSceneMgr();

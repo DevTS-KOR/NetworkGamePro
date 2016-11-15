@@ -57,6 +57,23 @@ void CSceneMgr::SetScene(SceneList _eID, CBitmapMgr* _pBitmapMgr)
 	m_pScene->Initialize(_pBitmapMgr);
 }
 
+void CSceneMgr::RecvInitInfo(InitInfo _InitInfo)
+{
+	int retval;
+	char buf[BUFSIZE];
+
+	retval = recv(sock, (char*)&_InitInfo, sizeof(InitInfo), 0);
+	if (retval == SOCKET_ERROR)
+		err_quit("recv()");
+
+	//_InitInfo = (InitInfo&)buf;
+
+	printf("%d바이트 받음\n", retval);
+
+	printf("위치위치 마녀는 영어로 위치 %d\n", _InitInfo.playerIndex);
+
+}
+
 GLvoid CSceneMgr::Render(GLvoid)
 {
 	m_pScene->Render();
@@ -123,6 +140,8 @@ GLvoid CSceneMgr::ConnectServer()
 	if (retval == SOCKET_ERROR)
 		err_quit("connect()");
 }
+
+
 
 GLvoid CSceneMgr::Update(int value)
 {
