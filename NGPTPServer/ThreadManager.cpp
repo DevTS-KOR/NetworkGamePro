@@ -114,13 +114,32 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID)
 	std::vector<MonsterInfo>::iterator monsterInfoIter;
 	monsterInfoIter = monsterVector.begin();
 	std::cout << "monsterPosUpdate" << std::endl;
+	float firstPosition[10];
+	float monsterDirection[10];
+	float moveRange = 300;
+	for (int i = 0; i < 10; ++i)
+	{
+		firstPosition[i] = monsterVector[i].MonsterPos.x;
+		
+		monsterDirection[i] = rand()%2 -1;
+		if (monsterDirection[i] == 0)
+			monsterDirection[i] = 1;
+	}
 
 	while(true)
 	{
+		for (int i = 0; i < 10; ++i)
+		{
+			if (monsterVector[i].MonsterPos.x < firstPosition[i] - moveRange)
+				monsterDirection[i] *= -1;
+			if (monsterVector[i].MonsterPos.x > firstPosition[i] + moveRange)
+				monsterDirection[i] *= -1;
+		}
+
 		for(int i = 0;i<10;++i)
 		{
-			monsterVector[i].MonsterPos.x += 1;
-			std::cout << monsterVector[i].MonsterPos.x << std::endl;
+			monsterVector[i].MonsterPos.x += (1*monsterDirection[i]);
+			//std::cout << monsterVector[i].MonsterPos.x << std::endl;
 		}
 	}
 }
