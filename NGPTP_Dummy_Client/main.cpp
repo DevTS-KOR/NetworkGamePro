@@ -2,6 +2,7 @@
 #include <WinSock2.h>
 #include <stdlib.h>	
 #include <iostream>
+#include "protocol.h"
 using namespace std;
 
 #define SERVERIP "127.0.0.1"
@@ -99,6 +100,11 @@ int main(int argc, char * argv[])
 		buf[retval] = '\0';
 		printf("[tcp 클라이언트] %d 바이틀르 받았습니다. \n", retval);
 		printf("[받은 데이터] %s \n", buf);
+
+		InitInfo a;
+		a = (InitInfo&)buf;
+
+		cout << "player1pos : " << a.playerIndex << endl;
 
 		printf("\n [보낼 데이터] : ");
 		if (fgets(buf, BUFSIZE + 1, stdin) == NULL)

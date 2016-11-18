@@ -14,8 +14,13 @@ COperator::COperator(
 	playerVecForCalcul = player;
 	monsterVecForCalcul = monsters;
 	bulletVecForCalcul = bullets;
+
+	playerIter = playerVecForCalcul->begin();
+	monsterIter = monsterVecForCalcul->begin();
+	//bulletIter = bulletVecForCalcul->begin();
+
 }
-void COperator::Update()
+void COperator::Update()		//recv받은거 어떻게 넘길지 고민해야할듯.
 {
 	std::vector<PlayerInfo>::iterator iter;
 	iter = playerVecForCalcul->begin();
@@ -23,6 +28,21 @@ void COperator::Update()
 	std::cout <<"player1"<< iter->PlayerPos.x << std::endl;
 	++iter;
 	std::cout << "player2" << iter->PlayerPos.x << std::endl;
+}
+void COperator::PlayerPosUpdate()
+{
+	PlayerInfo a;
+
+	if (a.playerIndex == 1)
+	{
+		playerIter->PlayerPos.x = 1;// 1대신 recv받은값
+	}
+	else//a.playerIndex==2
+	{
+		++playerIter;
+		playerIter->PlayerPos.x;
+		--playerIter;
+	}
 }
 COperator::~COperator()
 {

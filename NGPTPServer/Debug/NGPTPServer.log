@@ -1,10 +1,11 @@
 ﻿  ThreadManager.cpp
-d:\programming\networkgametermproject\networkgamepro\ngptpserver\threadmanager.cpp(111): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+c:\users\ddous\documents\networkgameprogramming termproject\networkgamepro\ngptpserver\threadmanager.cpp(124): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\ddous\documents\networkgameprogramming termproject\networkgamepro\ngptpserver\threadmanager.cpp(149): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
   Server.cpp
-d:\programming\networkgametermproject\networkgamepro\ngptpserver\server.cpp(63): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+c:\users\ddous\documents\networkgameprogramming termproject\networkgamepro\ngptpserver\server.cpp(63): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1868): note: 'inet_ntoa' 선언을 참조하십시오.
   Operator.cpp
   main.cpp
   코드를 생성하고 있습니다...
-  NGPTPServer.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPServer\Debug\NGPTPServer.exe
-  NGPTPServer.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPServer\Debug\NGPTPServer.pdb (Full PDB)
+  NGPTPServer.vcxproj -> C:\Users\ddous\Documents\NetworkGameProgramming TermProject\NetworkGamePro\NGPTPServer\Debug\NGPTPServer.exe
+  NGPTPServer.vcxproj -> C:\Users\ddous\Documents\NetworkGameProgramming TermProject\NetworkGamePro\NGPTPServer\Debug\NGPTPServer.pdb (Full PDB)
