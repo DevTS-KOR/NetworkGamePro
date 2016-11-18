@@ -67,7 +67,6 @@ GLubyte * CBitmapMgr::LoadDIBitmap(const char *filename, BITMAPINFO **info)
 
 void CBitmapMgr::TextureInit()
 {
-
 	glGenTextures(4, g_ivTextures[DRAW_LOGO]);
 	glBindTexture(GL_TEXTURE_2D, g_ivTextures[DRAW_LOGO][0]);
 	m_pBytes[DRAW_LOGO][0] = LoadDIBitmap(m_pszFilename[DRAW_LOGO][0], &m_pInfo[DRAW_LOGO][0]);

@@ -39,6 +39,9 @@ public:
 	void err_display(char *msg);
 	GLvoid ConnectServer();
 	void RecvInitInfo(InitInfo _InitInfo);
+	//void PlayerRender();
+	//void MonsterRender();
+	//void ContainerRender();
 public:
 	CSceneMgr();
 	~CSceneMgr();
