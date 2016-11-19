@@ -44,6 +44,52 @@ void COperator::PlayerPosUpdate()
 		--playerIter;
 	}
 }
+
+bool COperator::CollisionBulletWithMonster(BulletInfo & bullet, MonsterInfo& monster)
+{
+	return(
+		bullet.BulletPos.x+1 > monster.MonsterPos.x-30 &&
+		bullet.BulletPos.x-1 < monster.MonsterPos.x+30 &&
+		bullet.BulletPos.y+1 > monster.MonsterPos.y-55 &&
+		bullet.BulletPos.y-1 < monster.MonsterPos.y+55 &&
+		bullet.BulletPos.z+1 > monster.MonsterPos.z-15 &&
+		bullet.BulletPos.z-1 < monster.MonsterPos.z+15
+		);
+}
+bool COperator::CollisionBulletWithObstacle(BulletInfo&bullet, ContainerInfo& container )
+{
+	return(
+		bullet.BulletPos.x + 1 > container.position.x - 128 &&
+		bullet.BulletPos.x - 1 < container.position.x + 128 &&
+		bullet.BulletPos.y + 1 > container.position.y - 128 &&
+		bullet.BulletPos.y - 1 < container.position.y + 128 &&
+		bullet.BulletPos.z + 1 > container.position.z - 256 &&
+		bullet.BulletPos.z - 1 < container.position.z + 256
+		);
+}
+bool COperator::CollisionBulletWithMap(BulletInfo& bullet)
+{
+	if (bullet.BulletPos.x + 1 > 2000)
+		return true;
+	if (bullet.BulletPos.x - 1 < -2000)
+		return true;
+	if (bullet.BulletPos.y + 1 > 2000)
+		return true;
+	if (bullet.BulletPos.y - 1 < -2000)
+		return true;
+
+	return false;
+}
+bool COperator::CollisionObstacleWithPlayer(PlayerInfo&player, ContainerInfo& container)
+{
+	return(
+		player.PlayerPos.x + 1 > container.position.x - 128 &&
+		player.PlayerPos.x - 1 < container.position.x + 128 &&
+		player.PlayerPos.z + 1 > container.position.z - 256 &&
+		player.PlayerPos.z - 1 < container.position.z + 256
+		);
+}
 COperator::~COperator()
 {
+
 }

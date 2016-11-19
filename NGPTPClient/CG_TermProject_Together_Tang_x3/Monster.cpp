@@ -198,7 +198,10 @@ bool CMonster::Collision(vector<CBullet>&_vpBullet, double _targetRad)
 	//int a = 0;
 	for (auto iter = _vpBullet.begin(); iter != _vpBullet.end(); ++iter)
 	{
-		if (pow((Monster_Vec.fX - ((*iter).GetPos().fX + (MAP_SIZE / 2))), 2) + pow((Monster_Vec.fY - (*iter).GetPos().fY), 2) + pow((Monster_Vec.fZ - ((*iter).GetPos().fZ + (MAP_SIZE / 2))), 2) <= pow((100 + 5 / 2), 2) == true)
+		if (pow((Monster_Vec.fX - ((*iter).GetPos().fX + (MAP_SIZE / 2))), 2) + 
+			pow((Monster_Vec.fY - (*iter).GetPos().fY), 2) + pow((Monster_Vec.fZ - 
+			((*iter).GetPos().fZ + (MAP_SIZE / 2))), 2) <= pow((100 + 5 / 2), 2) 
+			== true)
 		{
 			PlaySound(TEXT("Sound\\¸ÂÃã.wav"), NULL, SND_ASYNC);
 			if (_vpBullet.empty()) break;

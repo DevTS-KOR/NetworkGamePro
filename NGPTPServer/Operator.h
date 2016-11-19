@@ -20,10 +20,11 @@ public:
 	void BulletPosUpdate();
 
 	//----충돌 함수들--
-	void CollisionBulletWithMonster();	
-	void CollisionObstacleWithPlayer();
-	void CollisionBulletWithMap();
-	void CollisionBulletWithObstacle();
+	bool CollisionBulletWithMonster(BulletInfo&, MonsterInfo&);								// 총알하고 몬스터 충돌함수
+	bool CollisionBulletWithMap(BulletInfo&);				// 맵전체하고 총알
+	bool CollisionBulletWithObstacle(BulletInfo&bullet, ContainerInfo& container);			// 총알하고 장애물 충돌함수
+	bool CollisionObstacleWithPlayer(PlayerInfo&,ContainerInfo&);			// 장애물과 플레이어 충돌함수
+	
 
 	
 private:

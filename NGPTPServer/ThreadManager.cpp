@@ -32,8 +32,8 @@ void CThreadManager::Init()
 	
 	//플레이어 위치값 공유자원들 초기화.
 	playerVector.reserve(2);
-	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ -1500,100,1900 },Vec3{ 0,0,0 },false });
-	playerVector.push_back(PlayerInfo{ DataType::PLAYER,Vec3{ 1500,100,1900 },Vec3{ 0,0,0 },false });
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,1,Vec3{ -1500,100,1900 },Vec3{ 0,0,0 },false });
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,2,Vec3{ 1500,100,1900 },Vec3{ 0,0,0 },false });
 
 	// 컨테이너 위치값 들 서버에 초기화 -> 충돌체크에 사용될것/
 	conVector.reserve(4);
@@ -117,6 +117,8 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID)
 	float firstPosition[10];
 	float monsterDirection[10];
 	float moveRange = 300;
+
+	//몬스터들의 방향 랜덤하게 초기화.
 	for (int i = 0; i < 10; ++i)
 	{
 		firstPosition[i] = monsterVector[i].MonsterPos.x;
@@ -125,7 +127,7 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID)
 		if (monsterDirection[i] == 0)
 			monsterDirection[i] = 1;
 	}
-
+	
 	while(true)
 	{
 		for (int i = 0; i < 10; ++i)
@@ -139,7 +141,6 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID)
 		for(int i = 0;i<10;++i)
 		{
 			monsterVector[i].MonsterPos.x += (1*monsterDirection[i]);
-			//std::cout << monsterVector[i].MonsterPos.x << std::endl;
 		}
 	}
 }
@@ -154,8 +155,6 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 	int retval;			//return value
 	char buf[BUFSIZE];
 	
-	//std::cout << thisIndex << std::endl;
-
 	while (true)				//이 함수내에서 send,recv 작업이 이루어짐.
 	{
 		retval = recv(client_sock, buf, sizeof(buf), 0);
