@@ -77,8 +77,8 @@ void CThreadManager::Init()
 	//양클라이언트에 보낼 초기값들에 초기화.
 	// Player1,2
 
-	initInform.Player1Pos = Vec3{ -1500, 100, 1900 };
-	initInform.Player2Pos = Vec3{ 1500, 100, 1900 };
+	initInform.Player1Pos = Vec3{ -1500, 50, 1900 };
+	initInform.Player2Pos = Vec3{ 1500, 50, 1900 };
 
 	//Monsters
 	initInform.MonsterPos[0] = Vec3{ -1000,100,-1800 };

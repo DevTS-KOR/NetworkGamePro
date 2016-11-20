@@ -54,6 +54,9 @@ GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 	m_fLightPos[2] = MAP_SIZE / 2;
 	Lights();
 
+	//for(int i =0; i < 2; i++)
+		//m_vpChracter.push_back(new CCharacter(m_pBitmapMgr, CSceneMgr::GetInitInfo()->Player1Pos.fX))
+	dynamic_cast<CCharacter*>(m_pCharacter)->SetCharPosition(CSceneMgr::GetInitInfo());
 	//glPushMatrix();
 	//{
 		//glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
@@ -131,7 +134,7 @@ GLvoid CInGame::Render(GLvoid)
 		//glPopMatrix();
 		//glPushMatrix();
 		//{
-			m_pCharacter->Draw();
+			//m_pCharacter->Draw();
 			m_cItem.Draw();
 		//}
 		//glPopMatrix();
@@ -183,6 +186,7 @@ GLvoid CInGame::Render(GLvoid)
 			////glPopMatrix();
 				glPushMatrix();
 				{
+					m_pCharacter->Draw();
 					//m_vpMonster.clear();
 					
 					auto iter = m_vpMonster.begin();

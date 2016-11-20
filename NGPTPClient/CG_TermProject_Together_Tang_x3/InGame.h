@@ -36,6 +36,7 @@ class CInGame : public CScene
 	//CGameObject*	m_pMonster;
 	CGameObject*	m_pBuilding;
 	CGameObject*	m_pCharacter;
+	vector<CGameObject*>	m_vpChracter;
 	Thunder			m_eThunderState;
 	float			m_fAmbientLight[4];
 	float			m_fDiffuseLight[4];

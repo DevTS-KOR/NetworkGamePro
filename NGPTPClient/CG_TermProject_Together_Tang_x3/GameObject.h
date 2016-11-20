@@ -6,6 +6,7 @@ class CGameObject
 {
 protected:
 	Vec3		m_tPosition;
+	Vec3		m_tPosition2;
 	ColorAlpha	m_tColor;
 	GLfloat		m_fSpeed;
 	GLfloat		m_fRotate;

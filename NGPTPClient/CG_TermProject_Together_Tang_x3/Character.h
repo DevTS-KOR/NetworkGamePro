@@ -12,6 +12,7 @@ class CCharacter : public CGameObject
 	GLubyte*		m_pPlayer[1][36];
 	CBitmapMgr*		m_pBitmapMgr;
 	PlayerList		m_ePlayerType;
+	InitInfo*		m_InitInfo;
 	float fZ_left_arm;
 	float fZ_right_arm;
 	float fZ_left_leg;
@@ -23,6 +24,8 @@ class CCharacter : public CGameObject
 	bool			m_bKeyUpState[4];
 public:
 	CCharacter(CBitmapMgr* _pBitmapMgr);
+	CCharacter(CBitmapMgr* _pBitmapMgr, float _fX1, float _fZ1, float _fX2, float _fZ2);
+
 	~CCharacter();
 
 	virtual GLvoid Initialize();
@@ -46,6 +49,7 @@ public:
 	void	SetCameraPos(float _fPos,int _Type);
 	void	SetCameraRotate(float _fPos, int _Type);
 	void	SetCameraDistance(int _iDistance);
+	void	SetCharPosition(InitInfo* _InitInfo);
 	//void	SetCameraRotate(float _fX, float _fY, float _fZ);
 
 

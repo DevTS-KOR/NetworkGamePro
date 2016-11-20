@@ -7,6 +7,18 @@ CCharacter::CCharacter(CBitmapMgr* _pBitmapMgr) : m_pBitmapMgr(_pBitmapMgr)
 	Initialize();
 }
 
+CCharacter::CCharacter(CBitmapMgr * _pBitmapMgr, float _fX, float _fZ, float _fX2, float _fZ2)
+{
+	Initialize();
+	m_tPosition.fX = _fX;
+	m_tPosition.fY = 50.f;
+	m_tPosition.fZ = _fZ;
+
+	m_tPosition2.fX = _fX2;
+	m_tPosition2.fY = 50.0f;
+	m_tPosition2.fZ = _fZ2;
+}
+
 
 CCharacter::~CCharacter()
 {
@@ -14,7 +26,7 @@ CCharacter::~CCharacter()
 
 GLvoid CCharacter::Initialize()
 {
-	m_tPosition = { 0, 100, MAP_SIZE / 2 };	//카메라의 좌표이다.
+	//m_tPosition = { 0, 100, MAP_SIZE / 2 };	//카메라의 좌표이다.
 	m_fCameraRotate = { 0, -90, 0 };
 	m_fSpeed = 10;
 	m_fSniper = 0;
@@ -40,54 +52,120 @@ GLvoid CCharacter::Initialize()
 GLvoid CCharacter::Draw()
 {
 	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	//3차원 사각형을 만드는 함수(x, y, z, 너비, 높이, 깊이, 그림배열, 그림x값, 그림y값)
-	glPushMatrix();
-	//머리
-	DrawCube(m_tPosition.fX, m_tPosition.fY + 30, m_tPosition.fZ + 20, 30, 30, 30, m_pPlayer[m_ePlayerType], 64, 64);
-	glPopMatrix();
+	//if (m_InitInfo->playerIndex == 1)
+	//{
+	
+		glPushMatrix();
+		//glRotatef(180.0f, 0, 1, 0);
+		//3차원 사각형을 만드는 함수(x, y, z, 너비, 높이, 깊이, 그림배열, 그림x값, 그림y값)
+		glPushMatrix();
+		//머리
+		DrawCube(m_tPosition2.fX, m_tPosition2.fY + 30, m_tPosition2.fZ + 20, 30, 30, 30, m_pPlayer[m_ePlayerType], 64, 64);
+		glPopMatrix();
 
-	glPushMatrix();
-	//몸통
-	//cout << "그려지고 있어요" << endl;
-	DrawCube(m_tPosition.fX, m_tPosition.fY, m_tPosition.fZ + 20, 30, 40, 15, m_pPlayer[m_ePlayerType] + 6, 64, 64);
-	glPopMatrix();
+		glPushMatrix();
+		//몸통
+		//cout << "그려지고 있어요" << endl;
+		DrawCube(m_tPosition2.fX, m_tPosition2.fY, m_tPosition2.fZ + 20, 30, 40, 15, m_pPlayer[m_ePlayerType] + 6, 64, 64);
+		glPopMatrix();
 
-	glPushMatrix();
-	//왼팔
-	glTranslatef(0.f, 20.f, 0.0f);
-	glRotatef(fZ_left_arm, 1, 0, 0);
-	glTranslatef(0.f, -20.f, 0.0f);
-	DrawCube(m_tPosition.fX - 22.5, m_tPosition.fY, m_tPosition.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 12, 21, 64);
+		glPushMatrix();
+		//왼팔
+		glPushMatrix();
+		glTranslatef(0.f, 20.f, 0.0f);
+		glRotatef(fZ_left_arm, 1, 0, 0);
+		glTranslatef(0.f, -20.f, 0.0f);
+		glPopMatrix();
+		DrawCube(m_tPosition2.fX - 22.5, m_tPosition2.fY, m_tPosition2.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 12, 21, 64);
 
-	glPopMatrix();
+		glPopMatrix();
 
-	glPushMatrix();
-	//오른팔
-	glTranslatef(0.f, 20.f, 0.0f);
-	glRotatef(fZ_right_arm, 1, 0, 0);
-	glTranslatef(0.f, -20.f, 0.0f);
-	DrawCube(m_tPosition.fX + 22.5, m_tPosition.fY, m_tPosition.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 18, 21, 64);
-	glPopMatrix();
+		glPushMatrix();
+		//오른팔
+		glPushMatrix();
+		glTranslatef(0.f, 20.f, 0.0f);
+		glRotatef(fZ_right_arm, 1, 0, 0);
+		glTranslatef(0.f, -20.f, 0.0f);
+		glPopMatrix();
+		DrawCube(m_tPosition2.fX + 22.5, m_tPosition2.fY, m_tPosition2.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 18, 21, 64);
+		glPopMatrix();
 
-	glPushMatrix();
-	//왼다리
-	//glTranslatef(0.f, 20.f, 0.0f);
-	glRotatef(fZ_left_leg, 1, 0, 0);
-	//glTranslatef(0.f, -20.f, 0.0f);
-	DrawCube(m_tPosition.fX - 7.5, m_tPosition.fY - 30, m_tPosition.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 24, 21, 64);
-	glPopMatrix();
+		glPushMatrix();
+		//왼다리
+		//glTranslatef(0.f, 20.f, 0.0f);
+		glPushMatrix();
+		glRotatef(fZ_left_leg, 1, 0, 0);
+		glPopMatrix();
+		//glTranslatef(0.f, -20.f, 0.0f);
+		DrawCube(m_tPosition2.fX - 7.5, m_tPosition2.fY - 30, m_tPosition2.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 24, 21, 64);
+		glPopMatrix();
 
-	glPushMatrix();
-	//오른다리
-	//glTranslatef(0.f, 20.f, 0.0f);
-	glRotatef(fZ_right_leg, 1, 0, 0);
-	//glTranslatef(0.f, -20.f, 0.0f);
-	DrawCube(m_tPosition.fX + 7.5, m_tPosition.fY - 30, m_tPosition.fZ - 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 30, 21, 64);
-	glPopMatrix();
+		glPushMatrix();
+		//오른다리
+		glPushMatrix();
+		//glTranslatef(0.f, 20.f, 0.0f);
+		glRotatef(fZ_right_leg, 1, 0, 0);
+		glPopMatrix();
+		//glTranslatef(0.f, -20.f, 0.0f);
+		DrawCube(m_tPosition2.fX + 7.5, m_tPosition2.fY - 30, m_tPosition2.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 30, 21, 64);
+		glPopMatrix();
+
+		//glRotatef(-180.0f, 0, 1, 0);
+		glPopMatrix();
+	//}
+
+	/*if (m_InitInfo->playerIndex == 2)
+	{
+		glPushMatrix();
+		//3차원 사각형을 만드는 함수(x, y, z, 너비, 높이, 깊이, 그림배열, 그림x값, 그림y값)
+		glPushMatrix();
+		//머리
+		DrawCube(m_tPosition.fX, m_tPosition.fY + 30, m_tPosition.fZ + 20, 30, 30, 30, m_pPlayer[m_ePlayerType], 64, 64);
+		glPopMatrix();
+
+		glPushMatrix();
+		//몸통
+		//cout << "그려지고 있어요" << endl;
+		DrawCube(m_tPosition.fX, m_tPosition.fY, m_tPosition.fZ + 20, 30, 40, 15, m_pPlayer[m_ePlayerType] + 6, 64, 64);
+		glPopMatrix();
+
+		glPushMatrix();
+		//왼팔
+		glTranslatef(0.f, 20.f, 0.0f);
+		glRotatef(fZ_left_arm, 1, 0, 0);
+		glTranslatef(0.f, -20.f, 0.0f);
+		DrawCube(m_tPosition.fX - 22.5, m_tPosition.fY, m_tPosition.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 12, 21, 64);
+
+		glPopMatrix();
+
+		glPushMatrix();
+		//오른팔
+		glTranslatef(0.f, 20.f, 0.0f);
+		glRotatef(fZ_right_arm, 1, 0, 0);
+		glTranslatef(0.f, -20.f, 0.0f);
+		DrawCube(m_tPosition.fX + 22.5, m_tPosition.fY, m_tPosition.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 18, 21, 64);
+		glPopMatrix();
+
+		glPushMatrix();
+		//왼다리
+		//glTranslatef(0.f, 20.f, 0.0f);
+		glRotatef(fZ_left_leg, 1, 0, 0);
+		//glTranslatef(0.f, -20.f, 0.0f);
+		DrawCube(m_tPosition.fX - 7.5, m_tPosition.fY - 30, m_tPosition.fZ + 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 24, 21, 64);
+		glPopMatrix();
+
+		glPushMatrix();
+		//오른다리
+		//glTranslatef(0.f, 20.f, 0.0f);
+		glRotatef(fZ_right_leg, 1, 0, 0);
+		//glTranslatef(0.f, -20.f, 0.0f);
+		DrawCube(m_tPosition.fX + 7.5, m_tPosition.fY - 30, m_tPosition.fZ - 20, 15, 40, 15, m_pPlayer[m_ePlayerType] + 30, 21, 64);
+		glPopMatrix();
 
 
-	glPopMatrix();
+		glPopMatrix();
+	}*/
+	
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -323,4 +401,20 @@ int CCharacter::GetCameraDistance()
 void CCharacter::SetCameraDistance(int _iDistance)
 {
 	m_iCameradistance = _iDistance;
+}
+
+void CCharacter::SetCharPosition(InitInfo* _InitInfo)
+{
+	m_InitInfo = _InitInfo;
+	//cout << "인덱스 번호 : " << m_InitInfo->playerIndex << endl;
+	if (_InitInfo->playerIndex == 1)
+	{
+		m_tPosition = _InitInfo->Player1Pos;
+		m_tPosition2 = _InitInfo->Player2Pos;
+	}
+	else if (_InitInfo->playerIndex == 2)
+	{
+		m_tPosition = _InitInfo->Player2Pos;
+		m_tPosition2 = _InitInfo->Player1Pos;
+	}
 }
