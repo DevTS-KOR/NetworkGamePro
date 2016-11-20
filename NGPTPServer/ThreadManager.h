@@ -1,5 +1,6 @@
 #pragma once
-
+#include <chrono>
+#include <ctime>
 #include "Operator.h"
 class CThreadManager
 {

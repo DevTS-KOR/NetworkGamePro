@@ -6,6 +6,11 @@ std::vector<MonsterInfo> CThreadManager::monsterVector;
 std::vector<BulletInfo> CThreadManager::bulletVector;
 std::vector<ContainerInfo> CThreadManager::conVector;
 
+struct MonsterUpdate
+{
+	SOCKET sock[2];
+};
+
 CThreadManager::CThreadManager() {};
 
 CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
@@ -15,6 +20,9 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 	playerIndex = 1;
 	//Init();
 
+	MonsterUpdate monsterUpdateStruct;
+	monsterUpdateStruct.sock[0] = client_sock[0];
+	monsterUpdateStruct.sock[1] = client_sock[1];
 	//Player1 Player2 순임
 	
 	hThreadHandle[0] = CreateThread(
@@ -24,7 +32,7 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)client_sock[1], CREATE_SUSPENDED, NULL);
 
 	hMonPosUpdateHandle = CreateThread(
-		NULL, 0, CThreadManager::MonsterPosUpdate, NULL, CREATE_SUSPENDED, NULL);
+		NULL, 0, CThreadManager::MonsterPosUpdate, &monsterUpdateStruct, CREATE_SUSPENDED, NULL);
 }
 
 void CThreadManager::Init()
@@ -109,14 +117,24 @@ void CThreadManager::err_quit(char * msg)
 	LocalFree(lpMsgBuf);
 	exit(1);
 }
-DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID)
+DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 {
+	MonsterUpdate *sockets = (MonsterUpdate*)params;
+	SOCKET client_sockets[2];
+	client_sockets[0] = sockets->sock[0];
+	client_sockets[1] = sockets->sock[1];
+
 	std::vector<MonsterInfo>::iterator monsterInfoIter;
 	monsterInfoIter = monsterVector.begin();
 	std::cout << "monsterPosUpdate" << std::endl;
 	float firstPosition[10];
 	float monsterDirection[10];
 	float moveRange = 300;
+	int retval = 0;
+	float leftTime = 1;
+	float nextTime = 0.0f;
+
+	MonsterPosForSend forSend;
 
 	//몬스터들의 방향 랜덤하게 초기화.
 	for (int i = 0; i < 10; ++i)
@@ -141,7 +159,21 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID)
 		for(int i = 0;i<10;++i)
 		{
 			monsterVector[i].MonsterPos.x += (1*monsterDirection[i]);
+			forSend.monsters[i] = monsterVector[i];
 		}
+
+
+		auto nowTime = std::clock();
+		if (nowTime>nextTime)
+		{
+			for (int i = 0; i < 2; ++i)
+			{
+				retval = send(client_sockets[0], (char*)&forSend, sizeof(MonsterPosForSend), 0);
+			}
+			nextTime = (std::clock()) + leftTime;
+		}
+		
+
 	}
 }
 DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)

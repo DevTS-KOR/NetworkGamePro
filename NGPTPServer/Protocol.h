@@ -87,3 +87,7 @@ struct ThreadParam
 	SOCKET clientsock;
 	int clientInex;
 };
+struct MonsterPosForSend
+{
+	MonsterInfo monsters[10];
+};
