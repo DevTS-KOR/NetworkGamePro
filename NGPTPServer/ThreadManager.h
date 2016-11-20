@@ -11,7 +11,7 @@ public:
 	static DWORD WINAPI ThreadFunc(LPVOID);	// 각각의 클라이언트 송수신을 위한 스레드함수.
 											// 인자값으로는 각각의 클라이언트 소켓을 받음.
 	static DWORD WINAPI MonsterPosUpdate(LPVOID);		//몬스터 위치값 실시간 움직여줌.
-														//통신 스레드간의 자원접근이 없으므로 스레드 없어도 될듯
+														
 	void DeleteThread();
 	void Init();
 	void err_quit(char * msg);

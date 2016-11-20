@@ -59,7 +59,7 @@ struct BulletInfo					//총알의 정보를 담당하는 구조체
 };
 
 struct MonsterInfo					//몬스터의 정보를 담당하는 구조체
-{
+{									//20byte;
 	int type;						//데이터 타입의 구분을 담당
 	Vec3 MonsterPos;				//몬스터의 위치를 담당
 	int hp;							//몬스터에 체력을 담당, 
@@ -87,7 +87,7 @@ struct ThreadParam
 	SOCKET clientsock;
 	int clientInex;
 };
-struct MonsterPosForSend
+struct MonsterPosForSend		//200byte
 {
 	MonsterInfo monsters[10];
 };
