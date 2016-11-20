@@ -49,7 +49,9 @@ GLvoid CLobby::Keyboard(unsigned char key, int x, int y)
 	switch (key)
 	{
 	case ' ':
-		CSceneMgr::GetInst()->SetScene(SCENE_INGAME, m_pBitmapMgr);
+		CSceneMgr::GetInst()->SendSpace();
+		CSceneMgr::GetInst()->RecvSpace();
+		CSceneMgr::GetInst()->SetScene(CSceneMgr::GetInst()->GetSceneInfo()->SceneState, m_pBitmapMgr);
 		break;
 	default:
 		break;
@@ -83,9 +85,8 @@ GLvoid CLobby::Release()
 
 GLvoid CLobby::Initialize(CBitmapMgr* _pBitmapMgr)
 {
-	InitInfo aaa;
 	CSceneMgr::GetInst()->ConnectServer();
-	CSceneMgr::GetInst()->RecvInitInfo(aaa);
+	CSceneMgr::GetInst()->RecvInitInfo();
 	m_pBitmapMgr = _pBitmapMgr;
 	m_iTextures = m_pBitmapMgr->GetTexture(SCENE_LOBBY)[0];
 //	m_dwTime = GetTickCount();

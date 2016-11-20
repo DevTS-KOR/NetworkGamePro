@@ -14,7 +14,7 @@ CCharacter::~CCharacter()
 
 GLvoid CCharacter::Initialize()
 {
-	m_tPosition = { 0, 100, MAP_SIZE/2 };	//카메라의 좌표이다.
+	m_tPosition = { 0, 100, MAP_SIZE / 2 };	//카메라의 좌표이다.
 	m_fCameraRotate = { 0, -90, 0 };
 	m_fSpeed = 10;
 	m_fSniper = 0;
@@ -114,6 +114,7 @@ GLvoid CCharacter::Update()
 		m_tPosition.fZ += m_fSpeed * sin((-m_fCameraRotate.fX) * PI / 180);
 	}
 
+	//cout <<"캐릭터 : " << m_tPosition.fX << " " << m_tPosition.fY << " " << m_tPosition.fZ << endl;
 
 	if (fZ_left_arm >= 70.f)
 	{

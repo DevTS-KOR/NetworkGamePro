@@ -2,6 +2,9 @@
 #include "Monster.h"
 #include "Common.h"
 #include "Character.h"
+
+int CMonster::m_MonsterList = 0;
+
 CMonster::CMonster()
 {
 	Initialize();
@@ -37,7 +40,10 @@ GLvoid CMonster::Initialize()
 	fArm_move = 10.0f;
 	fLeg_move = 5.0f;
 	m_fSpeed = 9;
-	m_eMonterType = (MonsterList)(rand() % 4);
+	//m_eMonterType = (MonsterList)(rand() % 4);
+	m_eMonterType = (MonsterList)(m_MonsterList % 4);
+	m_MonsterList++;
+
 	for (size_t i = 0; i < 4; i++)
 	{
 		for (size_t j = 0; j < 36; j++)
@@ -307,6 +313,11 @@ GLvoid CMonster::DrawCube(float fX, float fY, float fZ, float fWidth, float fHig
 Vec3 CMonster::GetPosition()
 {
 	return Monster_Vec;
+}
+
+void CMonster::SetPosition(Vec3 _Position)
+{
+	Monster_Vec = _Position;
 }
 
 void CMonster::Chase(CCharacter*_pCharacter)

@@ -50,31 +50,38 @@ GLvoid CBuilding::Draw()
 			glColor3ub(255, 255, 255);
 			glPushMatrix();
 			{
+				//중앙 종합
 				glTexImage2D(GL_TEXTURE_2D, 0, 3, 512, 512, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, m_pBuilding[1]);
 				//glColor3f(1.0f, 1.f, 1.f);
 				glTranslatef(0, 0, 1);
 				glBegin(GL_QUADS);
 				glTexCoord2f(0.0f, 0.0f);
-				glVertex3f(MAP_SIZE/2 - (400 / 2), 700 - (400 / 2), 100 + (200 / 2));
+				glVertex3f(-400, 700 - (400 / 2), -1950);
 				glTexCoord2f(1.0f, 0.0f);
-				glVertex3f(MAP_SIZE/2 + (400 / 2), 700 - (400 / 2), 100 + (200 / 2));
+				glVertex3f(400, 700 - (400 / 2), -1950);
 				glTexCoord2f(1.0f, 1.0f);
-				glVertex3f(MAP_SIZE/2 + (400 / 2), 700 + (400 / 2), 100 + (200 / 2));
+				glVertex3f(400, 700 + (400 / 2), -1950);
 				glTexCoord2f(0.0f, 1.0f);
-				glVertex3f(MAP_SIZE/2 - (400 / 2), 700 + (400 / 2), 100 + (200 / 2));
+				glVertex3f(-400, 700 + (400 / 2), -1950);
 				glEnd();
 			}
 			glPopMatrix();
 			//glTranslatef(0, 700, 500);
 			
-			DrawCube(MAP_SIZE / 2 + 130, 800, 200, 150, 150, 150, m_pBuilding[2], 512, 512,1);
+			//시계
+			//DrawCube(MAP_SIZE / 2 + 130, 800, 200, 150, 150, 150, m_pBuilding[2], 512, 512,1);
 		}
 		glPopMatrix();
 
-		DrawCube((MAP_SIZE / 2 - 200) / 2 +( MAP_SIZE / 2 + 200), 350, 100, MAP_SIZE / 2 - 200, 700, 200, m_pBuilding[0], 64, 64,0);
-		DrawCube(0, 300, MAP_SIZE / 2, 100 , 300, 100, m_pBuilding[0], 64, 64, 0);
-		DrawCube((MAP_SIZE / 2 - 200) / 2, 350, 100, MAP_SIZE / 2 - 200, 700, 200, m_pBuilding[0], 64, 64, 0);
-		DrawCube(MAP_SIZE / 2, 700, 100, 400, 400, 200, m_pBuilding[0], 64, 64, 0);
+		//오른쪽 종합
+		DrawCube(1200, 350, -1950, MAP_SIZE / 2 - 200, 700, 200, m_pBuilding[0], 64, 64,0);
+
+		//DrawCube(0, 300, MAP_SIZE / 2, 100 , 300, 100, m_pBuilding[0], 64, 64, 0);
+
+		//왼쪽 종합
+		DrawCube(-1200, 350, -1950, MAP_SIZE / 2 - 200, 700, 200, m_pBuilding[0], 64, 64, 0);
+
+		//DrawCube(MAP_SIZE / 2, 700, 100, 400, 400, 200, m_pBuilding[0], 64, 64, 0);
 
 		glPushMatrix();
 		{
@@ -84,7 +91,7 @@ GLvoid CBuilding::Draw()
 		glPopMatrix();
 
 
-		DrawContainer((MAP_SIZE / 2) + 300, 100, MAP_SIZE / 2, 200, 200, 500, m_pContainer, 512, 256, 3);
+		DrawContainer(0, 100, 1000, 200, 200, 500, m_pContainer, 512, 256, 3);
 		
 		glPushMatrix();
 		{
@@ -159,7 +166,7 @@ GLvoid CBuilding::Draw()
 		}
 		glPopMatrix();
 
-		DrawContainer((MAP_SIZE / 4) + 500, 100, (MAP_SIZE / 2) + 800, 200, 200, 500, m_pContainer, 512, 256, 3);
+		DrawContainer(1500, 100, 0, 200, 200, 500, m_pContainer, 512, 256, 3);
 
 		glPushMatrix();
 		{
@@ -234,7 +241,7 @@ GLvoid CBuilding::Draw()
 		}
 		glPopMatrix();
 
-		DrawContainer((MAP_SIZE / 2) + 100, 100, MAP_SIZE / 2, 200, 200, 500, m_pContainer, 512, 256, 3);
+		DrawContainer(0, 100, -1000, 200, 200, 500, m_pContainer, 512, 256, 3);
 
 		glPushMatrix();
 		{
@@ -310,7 +317,7 @@ GLvoid CBuilding::Draw()
 		}
 		glPopMatrix();
 
-		DrawContainer((MAP_SIZE / 2) + 800, 100, (MAP_SIZE / 2) + 600, 200, 200, 500, m_pContainer, 512, 256, 3);
+		DrawContainer(-1500, 100, 0, 200, 200, 500, m_pContainer, 512, 256, 3);
 
 		glPushMatrix();
 		{
@@ -386,7 +393,7 @@ GLvoid CBuilding::Draw()
 		}
 		glPopMatrix();
 
-		DrawContainer((MAP_SIZE / 2) + 700, 100, (MAP_SIZE / 2) - 300, 200, 200, 500, m_pContainer, 512, 256, 3);
+		//DrawContainer((MAP_SIZE / 2) + 700, 100, (MAP_SIZE / 2) - 300, 200, 200, 500, m_pContainer, 512, 256, 3);
 
 		glPushMatrix();
 		{

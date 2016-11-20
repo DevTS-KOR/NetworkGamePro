@@ -12,7 +12,7 @@ CWeather::~CWeather()
 }
 void CWeather::Initialize()
 {
-	m_tPosition = { (float)(rand() % MAP_SIZE), (float)(rand() % 1000), (float)(rand() % MAP_SIZE) };
+	m_tPosition = { (float)(rand() % MAP_SIZE - 2000), (float)(rand() % 1000), (float)(rand() % MAP_SIZE - 2000) };
 }
 
 void CWeather::Update()

@@ -15,9 +15,16 @@ class CSceneMgr
 	SOCKADDR_IN				serveraddr;
 	int						retval;
 	/////////////////////////////////////////////
-	InitInfo strInitInfo;
+	static InitInfo*		strInitInfo;
+	InitInfo				tempInitInfo;
+
+	static SceneInfo*		strSceneInfo;
+	SceneInfo				tempSceneInfo;
+
+	static MonsterPosForRecv* strMonsterPos;
+	MonsterPosForRecv		tempMonsterPos;
 public:
-	void SetScene(SceneList _eID, CBitmapMgr* _pBitmapMgr);
+	void SetScene(int _eID, CBitmapMgr* _pBitmapMgr);
 
 public:
 	static CSceneMgr* GetInst(void);
@@ -38,7 +45,15 @@ public:
 	// 소켓 함수 오류 출력
 	void err_display(char *msg);
 	GLvoid ConnectServer();
-	void RecvInitInfo(InitInfo _InitInfo);
+	void RecvInitInfo();
+	static InitInfo* GetInitInfo();
+	
+	void SendSpace();
+	void RecvSpace();
+	static SceneInfo* GetSceneInfo();
+
+	void SetMonsterPos();
+	static MonsterPosForRecv* GetMonsterPos();
 	//void PlayerRender();
 	//void MonsterRender();
 	//void ContainerRender();

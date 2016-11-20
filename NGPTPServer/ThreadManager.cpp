@@ -57,16 +57,16 @@ void CThreadManager::Init()
 	monsterVector.reserve(10);
 	MonsterInfo a[10];
 
-	a[0].MonsterPos = Vec3{ -1000,100,-1800 };
-	a[1].MonsterPos = Vec3{ -1000,100,-1000 };
-	a[2].MonsterPos = Vec3{ 1000,100,-1800 };
-	a[3].MonsterPos = Vec3{ 1000,100,-1000 };
-	a[4].MonsterPos = Vec3{ -500,100,-500 };
-	a[5].MonsterPos = Vec3{ 0,100,0 };
-	a[6].MonsterPos = Vec3{ 500,100,500 };
-	a[7].MonsterPos = Vec3{ -1000,100,1000 };
-	a[8].MonsterPos = Vec3{ 1000,100,1000 };
-	a[9].MonsterPos = Vec3{ 0,100,1500 };
+	a[0].MonsterPos = Vec3{ -1000,50,-1800 };
+	a[1].MonsterPos = Vec3{ -1000,50,-1000 };
+	a[2].MonsterPos = Vec3{ 1000,50,-1800 };
+	a[3].MonsterPos = Vec3{ 1000,50,-1000 };
+	a[4].MonsterPos = Vec3{ -500,50,-500 };
+	a[5].MonsterPos = Vec3{ 0,50,0 };
+	a[6].MonsterPos = Vec3{ 500,50,500 };
+	a[7].MonsterPos = Vec3{ -1000,50,1000 };
+	a[8].MonsterPos = Vec3{ 1000,50,1000 };
+	a[9].MonsterPos = Vec3{ 0,50,1500 };
 
 	for (int i = 0; i < 10; ++i)
 	{
@@ -128,7 +128,7 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 	float monsterDirection[10];
 	float moveRange = 300;
 	int retval = 0;
-	float leftTime = 1;
+	float leftTime = 1.0f;
 	float nextTime = 0.0f;
 
 	MonsterPosForSend forSend;
@@ -155,12 +155,12 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 
 		for(int i = 0;i<10;++i)
 		{
-			monsterVector[i].MonsterPos.x += (1*monsterDirection[i]);
+			monsterVector[i].MonsterPos.x += (0.0001*monsterDirection[i]);
 			forSend.monsters[i] = monsterVector[i];
 		}
 
 		auto nowTime = std::clock();
-		if (nowTime>nextTime)
+		if (nowTime > nextTime)
 		{
 			for (int i = 0; i < 2; ++i)
 			{
@@ -169,7 +169,7 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 				{
 					std::cout << "send¿¡·¯" << std::endl;
 				}
-				std::cout << "»÷µåÇßÀ½" << std::endl;
+				//std::cout << "»÷µåÇßÀ½" << std::endl;
 			}
 			nextTime = (std::clock()) + leftTime;
 		}

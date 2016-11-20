@@ -15,6 +15,7 @@ class CMonster : public CGameObject
 	GLubyte * m_pMonster[4][36];
 	CBitmapMgr*	m_pBitmapMgr;
 	MonsterList m_eMonterType;
+	static int  m_MonsterList;
 
 	vector<CBullet>* m_vpBullet;
 	float  m_fAngle;
@@ -38,5 +39,6 @@ public:
 	
 public:
 	Vec3	GetPosition();
+	void	SetPosition(Vec3 _Position);
 };
 

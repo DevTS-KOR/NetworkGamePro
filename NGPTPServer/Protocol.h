@@ -27,6 +27,7 @@ enum DataType						//데이터 타입의 구분 변수를 가진 열거형
 
 enum SceneList						//씬 구분 변수를 가진 열거험
 {
+	LOGO,
 	LOBBY,							//구분타입 -> 로비 씬
 	INGAME,							//구분타입 -> 게임진행 씬
 	RESULT							//구분타입 -> 게임결과 씬

@@ -7,6 +7,9 @@
 #include "InGame.h"
 #include "InResult.h"
 CSceneMgr* CSceneMgr::m_pInst = NULL;
+InitInfo* CSceneMgr::strInitInfo = NULL;
+SceneInfo* CSceneMgr::strSceneInfo = NULL;
+MonsterPosForRecv* CSceneMgr::strMonsterPos = NULL;
 
 CSceneMgr::CSceneMgr() :m_pScene(NULL)
 {
@@ -31,7 +34,7 @@ CSceneMgr::~CSceneMgr()
 	
 }
 
-void CSceneMgr::SetScene(SceneList _eID, CBitmapMgr* _pBitmapMgr)
+void CSceneMgr::SetScene(int _eID, CBitmapMgr* _pBitmapMgr)
 {
 	if (m_pScene != NULL)
 		::Safe_Delete(m_pScene);
@@ -57,22 +60,77 @@ void CSceneMgr::SetScene(SceneList _eID, CBitmapMgr* _pBitmapMgr)
 	m_pScene->Initialize(_pBitmapMgr);
 }
 
-void CSceneMgr::RecvInitInfo(InitInfo _InitInfo)
+void CSceneMgr::RecvInitInfo()
 {
 	int retval;
 	char buf[BUFSIZE];
 
-	retval = recv(sock, (char*)&_InitInfo, sizeof(InitInfo), 0);
+	retval = recv(sock, buf, sizeof(InitInfo), 0);
 	if (retval == SOCKET_ERROR)
 		err_quit("recv()");
 
-	//_InitInfo = (InitInfo&)buf;
-
+	tempInitInfo = (InitInfo&)buf;
+	strInitInfo = &tempInitInfo;
 	printf("%d바이트 받음\n", retval);
 
-	printf("위치위치 마녀는 영어로 위치 %d\n", _InitInfo.playerIndex);
+	//printf("위치위치 마녀는 영어로 위치 %f\n", strInitInfo->MonsterPos[4].fY);
 
 }
+
+InitInfo* CSceneMgr::GetInitInfo()
+{
+	return strInitInfo;
+}
+
+void CSceneMgr::SendSpace()
+{
+	int retval;
+	char buf[BUFSIZE];
+
+	retval = send(sock, buf, sizeof(buf), 0);
+	if (retval == SOCKET_ERROR)
+		err_quit("send()");
+}
+
+void CSceneMgr::RecvSpace()
+{
+	int retval;
+	char buf[BUFSIZE];
+
+	retval = recv(sock, buf, sizeof(SceneInfo), 0);
+	if (retval == SOCKET_ERROR)
+		err_quit("recv()");
+
+	tempSceneInfo = (SceneInfo&)buf;
+	strSceneInfo = &tempSceneInfo;
+}
+
+SceneInfo * CSceneMgr::GetSceneInfo()
+{
+	return strSceneInfo;
+}
+
+void CSceneMgr::SetMonsterPos()
+{
+	//cout << "받았어요1" << endl;
+	int retval;
+	char buf[BUFSIZE];
+
+	retval = recv(sock, buf, sizeof(MonsterPosForRecv), 0);
+	if (retval == SOCKET_ERROR)
+		err_quit("recv()");
+
+	//cout << "받았어요2" << endl;
+	tempMonsterPos = (MonsterPosForRecv&)buf;
+	strMonsterPos = &tempMonsterPos;
+
+}
+
+MonsterPosForRecv* CSceneMgr::GetMonsterPos()
+{
+	return strMonsterPos;
+}
+
 
 GLvoid CSceneMgr::Render(GLvoid)
 {

@@ -9,13 +9,14 @@
 extern	int		g_iWindow_Width;
 extern int		g_iWindow_Height;
 #define	DYNAMIC(Class,Pointer)	dynamic_cast<Class>(Pointer)
+DWORD WINAPI MyThread(LPVOID arg);
 
 CInGame::CInGame()
 {
 	m_fWorldAngle = {};
-
+	
 	m_fWorldTranslate.fX = 0;
-	m_View = {};
+	m_View = { 0 };
 	m_fWorldTranslate.fY = 0;
 	m_fWorldTranslate.fZ = 0;
 	m_iMouseSens = 300;
@@ -29,7 +30,7 @@ CInGame::~CInGame()
 GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 {
 	m_pBitmapMgr = _pBitmapMgr;
-	m_View = { 0, 0, -1000 };
+	m_View = { 0, 0, -100 };
 	m_iMouseSens = 300;
 	m_eThunderState = STATE_START;
 	m_dwRegenTime = GetTickCount();
@@ -52,8 +53,20 @@ GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 	m_fLightPos[1] = 800;
 	m_fLightPos[2] = MAP_SIZE / 2;
 	Lights();
+
+	//glPushMatrix();
+	//{
+		//glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
+		//CSceneMgr::GetInitInfo()
+		//m_vpMonster.push_back(new CMonster(m_pBitmapMgr, CSceneMgr::GetInitInfo()->MonsterPos[5].fX/* + 1000.0f*/, CSceneMgr::GetInitInfo()->MonsterPos[5].fZ/* + 2000.0f*/));
+		for (int i = 0; i < 10; i++)
+			m_vpMonster.push_back(new CMonster(m_pBitmapMgr, CSceneMgr::GetInitInfo()->MonsterPos[i].fX, CSceneMgr::GetInitInfo()->MonsterPos[i].fZ));
+	//}
+	//glPopMatrix();
 	m_iBlendcubeAngle = 0;
 	m_iClear = 0;
+
+	hThread = CreateThread(NULL, 0, MyThread, NULL, 0, NULL);
 }
 
 GLvoid CInGame::Render(GLvoid)
@@ -104,38 +117,42 @@ GLvoid CInGame::Render(GLvoid)
 			glPopMatrix();
 
 		}
-		SkyBox();
+	
 		glPushMatrix();
 		{
-			glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
-			for (size_t i = 0; i < 200; i++){
+			//glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
+			for (size_t i = 0; i < 200; i++)
+			{
 				glPushMatrix();
 				cWeather[i].DrawWeather();
 				glPopMatrix();
 			}
-		}
-		glPopMatrix();
-		glPushMatrix();
-		{
+		//}
+		//glPopMatrix();
+		//glPushMatrix();
+		//{
 			m_pCharacter->Draw();
 			m_cItem.Draw();
-		}
-		glPopMatrix();
-		glPushMatrix();
-		{
+		//}
+		//glPopMatrix();
+		//glPushMatrix();
+		//{
+			//glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
 			Ground();
-			Bunker();
-		}
-		glPopMatrix();
-		glPushMatrix();
-		{
-			glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
+			//Bunker();
+			SkyBox();
+		//}
+		//glPopMatrix();
 
-			glPushMatrix();
-			{
+		//glPushMatrix();
+		//{
+			//glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
+
+			//glPushMatrix();
+			//{
 				m_pBuilding->Draw();
-			}
-			glPopMatrix();
+			//}
+			//glPopMatrix();
 
 			/*glPushMatrix();
 			{
@@ -147,22 +164,59 @@ GLvoid CInGame::Render(GLvoid)
 			}
 			glPopMatrix();*/
 
-			glPushMatrix();
-			{
-				for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
+			////glPushMatrix();
+			////{
+			//	for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
+			//	{
+			//		glPushMatrix();
+			//		{
+			//		
+			//			glTranslatef(dynamic_cast<CMonster*>(*iter)->GetPosition().fX, dynamic_cast<CMonster*>(*iter)->GetPosition().fY, dynamic_cast<CMonster*>(*iter)->GetPosition().fZ);
+			//			//if (dynamic_cast<CMonster*>(*iter)->Collision(m_vBullet,5) == false)
+			//			glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
+			//			(*iter)->Draw();
+			//		}
+			//		glPopMatrix();
+			//	}
+			//
+			////}
+			////glPopMatrix();
+				glPushMatrix();
 				{
-					glPushMatrix();
+					//m_vpMonster.clear();
+					
+					auto iter = m_vpMonster.begin();
+					for (int i = 0; i < 10; i++)
 					{
-						glTranslatef(dynamic_cast<CMonster*>(*iter)->GetPosition().fX, dynamic_cast<CMonster*>(*iter)->GetPosition().fY, dynamic_cast<CMonster*>(*iter)->GetPosition().fZ);
-						//if (dynamic_cast<CMonster*>(*iter)->Collision(m_vBullet,5) == false)
-							(*iter)->Draw();
+						dynamic_cast<CMonster*>(*iter)->SetPosition(CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos);
+						iter++;
+						if(i == 9)
+							iter = m_vpMonster.begin();
 					}
-					glPopMatrix();
-				}
-			
-			}
-			glPopMatrix();
 
+						/*m_vpMonster.push_back(new CMonster(m_pBitmapMgr, 
+							CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos.fX, 
+							CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos.fZ));*/
+					
+					for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
+					{
+						glPushMatrix();
+						{
+							glTranslatef(dynamic_cast<CMonster*>(*iter)->GetPosition().fX, dynamic_cast<CMonster*>(*iter)->GetPosition().fY, dynamic_cast<CMonster*>(*iter)->GetPosition().fZ);
+
+							//glTranslatef(dynamic_cast<CMonster*>(*iter)->GetPosition().fX, dynamic_cast<CMonster*>(*iter)->GetPosition().fY, dynamic_cast<CMonster*>(*iter)->GetPosition().fZ);
+							//if (dynamic_cast<CMonster*>(*iter)->Collision(m_vBullet,5) == false)\
+
+							//왜 얘만?
+							//glTranslatef(MAP_SIZE / 2, 0, MAP_SIZE / 2);
+							//cout << "몬스터 : " << dynamic_cast<CMonster*>(*iter)->GetPosition().fX << " " << dynamic_cast<CMonster*>(*iter)->GetPosition().fY << " " << dynamic_cast<CMonster*>(*iter)->GetPosition().fZ << endl;
+							(*iter)->Draw();
+						}
+						glPopMatrix();
+					}
+
+				}
+				glPopMatrix();
 
 		}
 		glPopMatrix();
@@ -338,14 +392,17 @@ GLvoid CInGame::SpecialKeyboard(int key, int x, int y)
 
 GLvoid CInGame::Update(int value)
 {
+	//printf("몬스터값 %f", CSceneMgr::GetInitInfo()->MonsterPos[0].fY);
 
-	if (m_dwRegenTime + 5000 < GetTickCount())
+	/*if (m_dwRegenTime + 5000 < GetTickCount())
 	{
 		m_vpMonster.push_back(new CMonster(m_pBitmapMgr, 500+rand()%500, 1200+rand()%1000));
 		m_dwRegenTime = GetTickCount();
-	}
+	}*/
 	//m_vpMonster.push_back(new CMonster(m_pBitmapMgr));
 	//UpdatePosition();
+
+
 	for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
 	{
 	
@@ -379,6 +436,15 @@ GLvoid CInGame::Update(int value)
 	//m_pMonster->Update();
 }
 
+DWORD WINAPI MyThread(LPVOID arg)
+{
+	while (1)
+	{
+		CSceneMgr::GetInst()->SetMonsterPos();
+	}
+	return 0;
+}
+
 GLvoid CInGame::Mouse(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -410,11 +476,11 @@ GLvoid CInGame::MouseMotionFunc(int x, int y)
 
 	//마우스 휠을 느리게 하는수 밖에...
 	//아니면 핸들값을 얻기위해 Client Init을 갈아엎어야 한다.
-	if (MousePos.fX >= 200.f || MousePos.fX <= -200.0f)
+	/*if (MousePos.fX >= 200.f || MousePos.fX <= -200.0f)
 		SetCursorPos(500.0f, 500.0f);
 
 	if (MousePos.fY >= 200.f || MousePos.fY <= -200.0f)
-		SetCursorPos(500.0f, 500.0f);
+		SetCursorPos(500.0f, 500.0f);*/
 
 	m_MousePos.fX = (MousePos.fX);
 	m_MousePos.fY = (MousePos.fY);
@@ -472,7 +538,6 @@ GLvoid CInGame::Ground()
 {
 	glPushMatrix();
 	{
-		glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
 		//glColor4f(0.2f, 0.8f, 0.2f, 1.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glEnable(GL_TEXTURE_2D);
@@ -482,10 +547,10 @@ GLvoid CInGame::Ground()
 		//glTexCoord2f(0.0f, 0.0f);	
 		//glTexCoord2f(1.0f, 0.0f);	
 		//glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(0, 0, 0); glTexCoord2f(0.0f, 5.0f);
-		glVertex3f(MAP_SIZE, 0, 0); glTexCoord2f(5.0f, 5.0f);
-		glVertex3f(MAP_SIZE, 0, MAP_SIZE); glTexCoord2f(5.0f, 0.0f);
-		glVertex3f(0, 0, MAP_SIZE); glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-2000, 0, -2000); glTexCoord2f(0.0f, 5.0f);
+		glVertex3f(2000, 0, -2000); glTexCoord2f(5.0f, 5.0f);
+		glVertex3f(2000, 0, 2000); glTexCoord2f(5.0f, 0.0f);
+		glVertex3f(-2000, 0, 2000); glTexCoord2f(0.0f, 0.0f);
 		glEnd();
 		//glEnable(GL_TEXTURE_2D);
 		glDisable(GL_TEXTURE_2D);
@@ -506,7 +571,6 @@ GLvoid CInGame::Bunker()
 {
 	glPushMatrix();
 	{
-		glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
 		glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		glBegin(GL_QUADS);
 		//glTexCoord2f(0.0f, 1.0f);	
@@ -620,7 +684,7 @@ GLvoid CInGame::SpecialKeyboardUp(int key, int x, int y)
 
 GLvoid CInGame::KeyboardUp(unsigned char key, int x, int y)
 {
-	cout << "Keyboard Up함수 호출" << endl;
+	//cout << "Keyboard Up함수 호출" << endl;
 	switch (key)
 	{
 	case 'w':
@@ -658,56 +722,56 @@ GLvoid CInGame::SkyBox()
 		// 좌측
 		glEnable(GL_TEXTURE_2D);
 		glColor4f(1, 1, 1, 1);
-		glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
+		//glTranslatef(-MAP_SIZE / 2, 0, -MAP_SIZE / 2);
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, 1600, 900, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, m_pSkyBox[0]);
 		glBegin(GL_QUADS);
 		glTexCoord2d(0.0, 1.0);
-		glVertex3f(0, 1000, 0);
+		glVertex3f(-2000, 1000, 2000);
 		glTexCoord2d(0.0, 0.0);
-		glVertex3f(0, 0, 0);
+		glVertex3f(-2000, 0, 2000);
 		glTexCoord2d(1.0, 0.0);
-		glVertex3f(0, 0, MAP_SIZE);
+		glVertex3f(-2000, 0, -2000);
 		glTexCoord2d(1.0, 1.0);
-		glVertex3f(0, 1000, MAP_SIZE);
+		glVertex3f(-2000, 1000, -2000);
 		glEnd();
 
 		//우측
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, 1600, 900, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, m_pSkyBox[1]);
 		glBegin(GL_QUADS);
 		glTexCoord2d(0.0, 1.0);
-		glVertex3f(MAP_SIZE, 1000, 0);
+		glVertex3f(2000, 1000, -2000);
 		glTexCoord2d(0.0, 0.0);
-		glVertex3f(MAP_SIZE, 0, 0);
+		glVertex3f(2000, 0, -2000);
 		glTexCoord2d(1.0, 0.0);
-		glVertex3f(MAP_SIZE, 0, MAP_SIZE);
+		glVertex3f(2000, 0, 2000);
 		glTexCoord2d(1.0, 1.0);
-		glVertex3f(MAP_SIZE, 1000, MAP_SIZE);
+		glVertex3f(2000, 1000, 2000);
 		glEnd();
 
 		// 하늘
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, m_pSkyBox[2]);
 		glBegin(GL_QUADS);
 		glTexCoord2d(0.0, 1.0);
-		glVertex3f(0, 1000, 0);
+		glVertex3f(-2000, 1000, 2000);
 		glTexCoord2d(0.0, 0.0);
-		glVertex3f(0, 1000, MAP_SIZE);
+		glVertex3f(-2000, 1000, -2000);
 		glTexCoord2d(1.0, 0.0);
-		glVertex3f(MAP_SIZE, 1000, MAP_SIZE);
+		glVertex3f(2000, 1000, -2000);
 		glTexCoord2d(1.0, 1.0);
-		glVertex3f(MAP_SIZE, 1000, 0);
+		glVertex3f(2000, 1000, 2000);
 		glEnd();
 
 		// 뒤
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, 512, 256, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, m_pSkyBox[4]);
 		glBegin(GL_QUADS);
 		glTexCoord2d(0.0, 1.0);
-		glVertex3f(MAP_SIZE, 1000, MAP_SIZE);
+		glVertex3f(-2000, 1000, -2000);
 		glTexCoord2d(0.0, 0.0);
-		glVertex3f(MAP_SIZE, 0, MAP_SIZE);
+		glVertex3f(-2000, 0, -2000);
 		glTexCoord2d(1.0, 0.0);
-		glVertex3f(0, 0, MAP_SIZE);
+		glVertex3f(2000, 0, -2000);
 		glTexCoord2d(1.0, 1.0);
-		glVertex3f(0, 1000, MAP_SIZE);
+		glVertex3f(2000, 1000, -2000);
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 		/*glBegin(GL_QUADS);

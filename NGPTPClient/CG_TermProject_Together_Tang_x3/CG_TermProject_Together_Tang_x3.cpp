@@ -21,7 +21,7 @@ GLvoid	SpecialKeyboard(int key, int x, int y);
 GLvoid	TimerFunc(int value);
 GLvoid	Mouse(int button, int state, int x, int y);
 GLvoid	MotionFunc(int x, int y);
-GLvoid		MenuFunc(int button);
+GLvoid	MenuFunc(int button);
 int _tmain(int argc, _TCHAR* argv[])
 {
 	srand(unsigned int(time(NULL)));

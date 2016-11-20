@@ -68,8 +68,8 @@ enum SceneList
 {
 	SCENE_LOGO,
 	SCENE_LOBBY,
-	SCENE_INRESULT,
 	SCENE_INGAME,
+	SCENE_INRESULT,
 	SCENE_NONE
 };
 
@@ -158,7 +158,7 @@ struct MonsterInfo					//몬스터의 정보를 담당하는 구조체
 {
 	int type;						//데이터 타입의 구분을 담당
 	Vec3 MonsterPos;				//몬스터의 위치를 담당
-	int hp;						//몬스터에 체력을 담당, 
+	int hp;							//몬스터에 체력을 담당, 
 									//기본적으로 3에 체력을 가지며 총알에 한발 맞으면, 체력이 1이 깎인다.
 };
 
@@ -171,4 +171,9 @@ struct ResultInfo					// 결과 조건을 보내기 위한 구조체
 {
 	int killCount;					// 플레이어가 몇 마리의 몬스터를 잡았는지 
 	int SceneState;					// 양쪽 클라이언트에 결과화면을 띄우기 위해 보내는 변수
+};
+
+struct MonsterPosForRecv
+{
+	MonsterInfo monsters[10];
 };

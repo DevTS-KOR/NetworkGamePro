@@ -43,9 +43,11 @@ void CBullet::Update()
 		//this->Release();
 	}
 	//cout << "X " << m_fPos.fX << "Y " << m_fPos.fY << "Z " << m_fPos.fZ << endl;
-	m_fPos.fX += m_fDir.fX * 100;
-	m_fPos.fY += m_fDir.fY * 100;
-	m_fPos.fZ += m_fDir.fZ * 100;
+	m_fPos.fX += m_fDir.fX * 50;
+	m_fPos.fY += m_fDir.fY * 50;
+	m_fPos.fZ += m_fDir.fZ * 50;
+
+	//cout << "ÃÑ¾Ë : " << m_fPos.fX << " " << m_fPos.fY << " " << m_fPos.fZ << endl;
 }
 
 Vec3 CBullet::GetPos()
