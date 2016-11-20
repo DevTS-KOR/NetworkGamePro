@@ -8,11 +8,6 @@ std::vector<ContainerInfo> CThreadManager::conVector;
 
 SOCKET client_sockForMPU[2];
 
-struct MonsterUpdate
-{
-	SOCKET sock[2];
-};
-
 CThreadManager::CThreadManager() {};
 
 CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
@@ -74,6 +69,7 @@ void CThreadManager::Init()
 		a[i].hp = 3;
 		monsterVector.push_back(a[i]);
 	}
+	std::cout << "InInit Function : " << (monsterVector.size()) << std::endl;
 	//양클라이언트에 보낼 초기값들에 초기화.
 	// Player1,2
 
@@ -123,12 +119,13 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 	/*std::vector<MonsterInfo>::iterator monsterInfoIter;
 	monsterInfoIter = monsterVector.begin();*/
 	std::cout << "monsterPosUpdate" << std::endl;
-
+	std::cout << "MonsterVectorSIze : " << monsterVector.size() << std::endl;
+	std::cout << std::endl;
 	float firstPosition[10];
 	float monsterDirection[10];
 	float moveRange = 300;
 	int retval = 0;
-	float leftTime = 1;
+	float leftTime = 1.0f;
 	float nextTime = 0.0f;
 
 	MonsterPosForSend forSend;
@@ -145,7 +142,7 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 	
 	while(true)
 	{
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < monsterVector.size(); ++i)
 		{
 			if (monsterVector[i].MonsterPos.x < firstPosition[i] - moveRange)
 				monsterDirection[i] *= -1;
@@ -153,9 +150,10 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 				monsterDirection[i] *= -1;
 		}
 
-		for(int i = 0;i<10;++i)
+		for(int i = 0;i<monsterVector.size();++i)
 		{
 			monsterVector[i].MonsterPos.x += (1*monsterDirection[i]);
+			
 			forSend.monsters[i] = monsterVector[i];
 		}
 
@@ -167,9 +165,9 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 				retval = send(client_sockForMPU[i], (char*)&forSend, sizeof(MonsterPosForSend), 0);
 				if (retval == SOCKET_ERROR)
 				{
-					std::cout << "send에러" << std::endl;
+					std::cout << "MonsterPos Send ERROR" << std::endl;
 				}
-				std::cout << "샌드했음" << std::endl;
+				//std::cout << "데이터 보냄" << std::endl;
 			}
 			nextTime = (std::clock()) + leftTime;
 		}
@@ -188,11 +186,15 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 	
 	while (true)				//이 함수내에서 send,recv 작업이 이루어짐.
 	{
+		//처음에 어떤 메세지 타입입지 받고 그 타입에 맞게 크기받아서 연산.
+		
 		retval = recv(client_sock, buf, sizeof(buf), 0);
 
 		//오류검사문 필요
 		calculate.Update();
 		retval = send(client_sock, buf, sizeof(buf), 0);
+		//어떤 데이터 타입인지 먼저 보내고
+		//실질적인 데이터를 보냄.
 	}
 	return 0;
 }
@@ -212,7 +214,6 @@ void CThreadManager::Update()
 		initInform.playerIndex += 1;
 	}
 	std::cout << "초기값 전송 완료." << std::endl;
-
 
 	std::cout << "준비완료 메세지 수신" << std::endl;			// 아직은 첫번째 클라 두번째 클라 순으로 받아야함
 	for (int i = 0; i<2; ++i)									// 차후 수정 필요.
