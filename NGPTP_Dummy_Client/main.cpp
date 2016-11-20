@@ -9,7 +9,7 @@ using namespace std;
 //#define SERVERIP "10.30.1.6"
 #define SERVERPORT 9000
 #define BUFSIZE 512
-
+SOCKET sock;
 void err_quit(char * msg)
 {
 	LPVOID lpMsgBuf;
@@ -55,38 +55,13 @@ int recvn(SOCKET s, char * buf, int len, int flags)
 	return (len - left);
 }
 
-int main(int argc, char * argv[])
+
+DWORD WINAPI ThreadFunc(LPVOID param)
 {
 	int retval;
-
-	//윈속 초기화
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-		return 1;
-
-	//socket
-
-	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET)
-		err_quit("socket()");
-
-	//connect()
-	SOCKADDR_IN serveraddr;
-	ZeroMemory(&serveraddr, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
-	serveraddr.sin_port = htons(SERVERPORT);
-	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect");
-
-	//네트워크 사용 변수
-	char buf[BUFSIZE + 1];
-	int len;
-	cout << "1" << endl;
-	while (true)
+	char buf[BUFSIZE];
+	while(true)
 	{
-		cout << "2" << endl;
-		//데이터 받기
 		retval = recv(sock, buf, BUFSIZE, 0);
 		if (retval == SOCKET_ERROR)
 		{
@@ -103,8 +78,45 @@ int main(int argc, char * argv[])
 
 		InitInfo a;
 		a = (InitInfo&)buf;
+	}
+	return 0;
+}
+int main(int argc, char * argv[])
+{
+	int retval;
+	HANDLE handle;
+	//윈속 초기화
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+		return 1;
 
-		cout << "player1pos : " << a.playerIndex << endl;
+	//socket
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET)
+		err_quit("socket()");
+
+	//connect()
+	SOCKADDR_IN serveraddr;
+	ZeroMemory(&serveraddr, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+	serveraddr.sin_port = htons(SERVERPORT);
+	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
+	if (retval == SOCKET_ERROR) err_quit("connect");
+
+	//네트워크 사용 변수
+	char buf[BUFSIZE + 1];
+	int len;
+	cout << "1" << endl;
+
+	cout << "스레드 생성" << endl;
+	handle = CreateThread(NULL, 0,ThreadFunc, NULL, 0, NULL);
+
+	while (true)
+	{
+		cout << "2" << endl;
+		//데이터 받기
 
 		printf("\n [보낼 데이터] : ");
 		if (fgets(buf, BUFSIZE + 1, stdin) == NULL)
