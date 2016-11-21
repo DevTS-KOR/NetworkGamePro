@@ -12,10 +12,11 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#define SERVERIP	"127.0.0.1"/*"192.168.80.129"*/
+#define SERVERIP	/*"127.0.0.1"*/"192.168.83.243"
 #define SERVERPORT	9000
 #define BUFSIZE		512
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+
 #include <gl\glew.h>
 #include <gl\glut.h> 
 #include <Winsock2.h>

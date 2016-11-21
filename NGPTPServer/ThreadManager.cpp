@@ -128,9 +128,10 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 	float monsterDirection[10];
 	float moveRange = 300;
 	int retval = 0;
-	float leftTime = 1.0f;
-	float nextTime = 0.0f;
 
+	std::chrono::system_clock::time_point nowTime;
+	std::chrono::system_clock::time_point nextTime;
+	std::chrono::duration<double> DefaultSec;
 	MonsterPosForSend forSend;
 
 	//몬스터들의 방향 랜덤하게 초기화.
@@ -155,12 +156,13 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 
 		for(int i = 0;i<10;++i)
 		{
-			monsterVector[i].MonsterPos.x += (0.0001*monsterDirection[i]);
+			monsterVector[i].MonsterPos.x += (0.00005*monsterDirection[i]);
 			forSend.monsters[i] = monsterVector[i];
 		}
 
-		auto nowTime = std::clock();
-		if (nowTime > nextTime)
+		nowTime = std::chrono::system_clock::now();
+		DefaultSec = nowTime - nextTime;
+		if (0.5 < DefaultSec.count())			//시간 조절해서 샌드가능.
 		{
 			for (int i = 0; i < 2; ++i)
 			{
@@ -171,7 +173,7 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 				}
 				//std::cout << "샌드했음" << std::endl;
 			}
-			nextTime = (std::clock()) + leftTime;
+			nextTime = std::chrono::system_clock::now();
 		}
 	}
 }
