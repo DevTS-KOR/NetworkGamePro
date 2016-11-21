@@ -10,6 +10,7 @@ CSceneMgr* CSceneMgr::m_pInst = NULL;
 InitInfo* CSceneMgr::strInitInfo = NULL;
 SceneInfo* CSceneMgr::strSceneInfo = NULL;
 MonsterPosForRecv* CSceneMgr::strMonsterPos = NULL;
+unsigned char CSceneMgr::charKey = 0;
 
 CSceneMgr::CSceneMgr() :m_pScene(NULL)
 {
@@ -65,11 +66,11 @@ void CSceneMgr::RecvInitInfo()
 	int retval;
 	char buf[BUFSIZE];
 
-	retval = recv(sock, buf, sizeof(InitInfo), 0);
+	retval = recv(sock, (char*)&tempInitInfo, sizeof(InitInfo), 0);
 	if (retval == SOCKET_ERROR)
 		err_quit("recv()");
 
-	tempInitInfo = (InitInfo&)buf;
+	//tempInitInfo = (InitInfo&)buf;
 	strInitInfo = &tempInitInfo;
 	printf("%d바이트 받음\n", retval);
 
@@ -115,20 +116,80 @@ void CSceneMgr::SetMonsterPos()
 	//cout << "받았어요1" << endl;
 	int retval;
 	char buf[BUFSIZE];
-
-	retval = recv(sock, buf, sizeof(MonsterPosForRecv), 0);
+	
+	int dataType;
+	retval = recvn(sock, (char*)&dataType, sizeof(dataType), 0);
 	if (retval == SOCKET_ERROR)
 		err_quit("recv()");
 
-	//cout << "받았어요2" << endl;
-	tempMonsterPos = (MonsterPosForRecv&)buf;
-	strMonsterPos = &tempMonsterPos;
+	if (dataType == 0)
+	{
+		/*retval = recvn(sock, (char*)&tempPlayerInfo, sizeof(MonsterPosForRecv), 0);
+		if (retval == SOCKET_ERROR)
+			err_quit("recv()");*/
 
+
+	}
+
+	if (dataType == 2)
+	{
+		retval = recvn(sock, (char*)&tempMonsterPos, sizeof(MonsterPosForRecv), 0);
+		if (retval == SOCKET_ERROR)
+			err_quit("recv()");
+
+		//cout << "받았어요2" << endl;
+		//tempMonsterPos = (MonsterPosForRecv&)buf;
+		strMonsterPos = &tempMonsterPos;
+	}
 }
 
 MonsterPosForRecv* CSceneMgr::GetMonsterPos()
 {
 	return strMonsterPos;
+}
+
+int CSceneMgr::recvn(SOCKET s, char * buf, int len, int flags)
+{
+	int received;
+	char *ptr = buf;
+	int left = len;
+
+	while (left > 0) {
+		received = recv(s, ptr, left, flags);
+		if (received == SOCKET_ERROR)
+			return SOCKET_ERROR;
+		else if (received == 0)
+			break;
+		left -= received;
+		ptr += received;
+	}
+
+	return (len - left);
+}
+
+void CSceneMgr::SetKey(unsigned char _Key)
+{
+	charKey = _Key;
+	//SendKey();
+}
+
+void CSceneMgr::SendKey()
+{
+	int retval;
+	int dataType = 0;
+
+	retval = send(sock, (char*)&dataType, sizeof(dataType), 0);
+	if (retval == SOCKET_ERROR)
+		err_display("send()");
+
+	//char buf[BUFSIZE];
+	tempPlayerInfo.PlayerIndex = strInitInfo->playerIndex;
+	tempPlayerInfo.AniandKeyState = true;
+	tempPlayerInfo.charKey = charKey;
+	
+	retval = send(sock, (char*)&tempPlayerInfo, sizeof(PlayerInfo), 0);
+	if (retval == SOCKET_ERROR)
+		err_display("send()");
 }
 
 

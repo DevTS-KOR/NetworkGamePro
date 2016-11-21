@@ -23,6 +23,11 @@ class CSceneMgr
 
 	static MonsterPosForRecv* strMonsterPos;
 	MonsterPosForRecv		tempMonsterPos;
+
+	static PlayerInfo*		strPlayerInfo;
+
+	static unsigned char	charKey;
+	PlayerInfo				tempPlayerInfo;
 public:
 	void SetScene(int _eID, CBitmapMgr* _pBitmapMgr);
 
@@ -54,6 +59,10 @@ public:
 
 	void SetMonsterPos();
 	static MonsterPosForRecv* GetMonsterPos();
+	int recvn(SOCKET s, char* buf, int len, int flags);
+
+	static void SetKey(unsigned char _Key);
+	void SendKey();
 	//void PlayerRender();
 	//void MonsterRender();
 	//void ContainerRender();

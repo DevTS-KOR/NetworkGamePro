@@ -45,8 +45,8 @@ GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 		cWeather[i].Initialize();
 	for (size_t i = 0; i < 3; i++)
 	{
-		m_fAmbientLight[i] = 0.1;
-		m_fDiffuseLight[i] = 0.2;
+		m_fAmbientLight[i] = 0.9;
+		m_fDiffuseLight[i] = 0.9;
 		m_fSpecularLight[i]=0.7;
 	}
 	m_fLightPos[0] = MAP_SIZE / 2;
@@ -90,7 +90,7 @@ GLvoid CInGame::Render(GLvoid)
 	//glEnable(GL_CULL_FACE);  // 내부는 잘라낸다  
 
 	glLoadIdentity();
-	Lights();
+	//Lights();
 	// 저격 모드 토글
 	glPushMatrix();
 	{
@@ -363,6 +363,9 @@ GLvoid CInGame::Keyboard(unsigned char key, int x, int y)
 		break;
 	}
 
+	CSceneMgr::GetInst()->SetKey(key);
+	CSceneMgr::GetInst()->SendKey();
+
 	glutPostRedisplay();
 }
 
@@ -442,7 +445,7 @@ GLvoid CInGame::Update(int value)
 
 DWORD WINAPI MyThread(LPVOID arg)
 {
-	while (1)
+	while (true)
 	{
 		CSceneMgr::GetInst()->SetMonsterPos();
 	}
@@ -468,6 +471,13 @@ GLvoid CInGame::Mouse(int button, int state, int x, int y)
 			DYNAMIC(CCharacter*, m_pCharacter)->GetPosition().fZ + m_View.fZ)
 			);
 
+		//
+		cout << "끼욬 : " << sx << ", " << sy << ", " << sz << endl;
+		cout << "뷰뷰 : " << m_View.fX << ", " << m_View.fY << ", " << m_View.fZ << endl;
+		//플레이어 위치가 나온다...
+		cout << "위치? : " << DYNAMIC(CCharacter*, m_pCharacter)->GetPosition().fX << ", "
+			<< DYNAMIC(CCharacter*, m_pCharacter)->GetPosition().fY << ", "
+			<< DYNAMIC(CCharacter*, m_pCharacter)->GetPosition().fZ << endl;
 	}
 	glutPostRedisplay();
 }
@@ -704,6 +714,10 @@ GLvoid CInGame::KeyboardUp(unsigned char key, int x, int y)
 		DYNAMIC(CCharacter*, m_pCharacter)->SetKeyUpstate(KEYUP_RIGHT, false);
 		break;
 	}
+
+	//CSceneMgr::GetInst()->SetKey(key);
+
+
 	//if (key == 'w')
 	//	DYNAMIC(CCharacter*, m_pCharacter)->SetKeyUpstate(KEYUP_NONE);
 
