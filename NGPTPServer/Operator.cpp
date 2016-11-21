@@ -29,13 +29,30 @@ void COperator::Update()		//recv받은거 어떻게 넘길지 고민해야할듯.
 	++iter;
 	std::cout << "player2" << iter->PlayerPos.x << std::endl;
 }
-void COperator::PlayerPosUpdate()
+void COperator::PlayerPosUpdate(PlayerInfo param)
 {
-	PlayerInfo a;
-
+	PlayerInfo a=param;
+	std::cout << "playerposupdate호출" << std::endl;
+	std::cout << a.playerIndex << std::endl;
 	if (a.playerIndex == 1)
 	{
-		playerIter->PlayerPos.x = 1;// 1대신 recv받은값
+		if (a.charKey == 'w')
+		{
+			std::cout << "w키옴" << std::endl;
+			playerIter->PlayerPos.x = 1;// 1대신 recv받은값
+		}
+		if (a.charKey == 's')
+		{
+
+		}
+		if (a.charKey == 'a')
+		{
+
+		}
+		if (a.charKey == 'd')
+		{
+
+		}
 	}
 	else//a.playerIndex==2
 	{

@@ -15,17 +15,17 @@ struct MonsterUpdate
 
 CThreadManager::CThreadManager() {};
 
-CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
+CThreadManager::CThreadManager(SOCKET client_socket1, SOCKET client_socket2)
 {
 	client_sock[0] = client_socket1;
 	client_sock[1] = client_socket2;
 	playerIndex = 1;
 	//Init();
-	
+
 	client_sockForMPU[0] = client_sock[0];
 	client_sockForMPU[1] = client_sock[1];
 	//Player1 Player2 순임
-	
+
 	hThreadHandle[0] = CreateThread(
 		NULL, 0, CThreadManager::ThreadFunc, (LPVOID)client_sock[0], CREATE_SUSPENDED, NULL);
 
@@ -38,18 +38,18 @@ CThreadManager::CThreadManager(SOCKET client_socket1,SOCKET client_socket2)
 
 void CThreadManager::Init()
 {
-	
+
 	//플레이어 위치값 공유자원들 초기화.
 	playerVector.reserve(2);
-	playerVector.push_back(PlayerInfo{ DataType::PLAYER,1,Vec3{ -1500,100,1900 },Vec3{ 0,0,0 },false });
-	playerVector.push_back(PlayerInfo{ DataType::PLAYER,2,Vec3{ 1500,100,1900 },Vec3{ 0,0,0 },false });
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,1,Vec3{ -1500,50,1900 },Vec3{ 0,0,0 },false });
+	playerVector.push_back(PlayerInfo{ DataType::PLAYER,2,Vec3{ 1500,50,1900 },Vec3{ 0,0,0 },false });
 
 	// 컨테이너 위치값 들 서버에 초기화 -> 충돌체크에 사용될것/
 	conVector.reserve(4);
-	conVector.push_back(ContainerInfo{ Vec3{0,300,1000} });
-	conVector.push_back(ContainerInfo{ Vec3{1500,300,0} });
-	conVector.push_back(ContainerInfo{ Vec3{ 0,300,-1000} });
-	conVector.push_back(ContainerInfo{ Vec3{-1500,300,0} });
+	conVector.push_back(ContainerInfo{ Vec3{ 0,300,1000 } });
+	conVector.push_back(ContainerInfo{ Vec3{ 1500,300,0 } });
+	conVector.push_back(ContainerInfo{ Vec3{ 0,300,-1000 } });
+	conVector.push_back(ContainerInfo{ Vec3{ -1500,300,0 } });
 
 	//Vec3  a{ 1,2,3 };
 	int hp = 3;
@@ -81,16 +81,16 @@ void CThreadManager::Init()
 	initInform.Player2Pos = Vec3{ 1500, 50, 1900 };
 
 	//Monsters
-	initInform.MonsterPos[0] = Vec3{ -1000,100,-1800 };
-	initInform.MonsterPos[1] = Vec3{ -1000,100,-1000 };
-	initInform.MonsterPos[2] = Vec3{ 1000,100,-1800 };
-	initInform.MonsterPos[3] = Vec3{ 1000,100,-1000 };
-	initInform.MonsterPos[4] = Vec3{ -500,100,-500 };
-	initInform.MonsterPos[5] = Vec3{ 0,100,0 };
-	initInform.MonsterPos[6] = Vec3{ 500,100,500 };
-	initInform.MonsterPos[7] = Vec3{ -1000,100,1000 };
-	initInform.MonsterPos[8] = Vec3{ 1000,100,1000 };
-	initInform.MonsterPos[9] = Vec3{ 0,100,1500 };
+	initInform.MonsterPos[0] = Vec3{ -1000,50,-1800 };
+	initInform.MonsterPos[1] = Vec3{ -1000,50,-1000 };
+	initInform.MonsterPos[2] = Vec3{ 1000,50,-1800 };
+	initInform.MonsterPos[3] = Vec3{ 1000,50,-1000 };
+	initInform.MonsterPos[4] = Vec3{ -500,50,-500 };
+	initInform.MonsterPos[5] = Vec3{ 0,50,0 };
+	initInform.MonsterPos[6] = Vec3{ 500,50,500 };
+	initInform.MonsterPos[7] = Vec3{ -1000,50,1000 };
+	initInform.MonsterPos[8] = Vec3{ 1000,50,1000 };
+	initInform.MonsterPos[9] = Vec3{ 0,50,1500 };
 
 	initInform.playerIndex = 1;
 }
@@ -120,31 +120,28 @@ void CThreadManager::err_quit(char * msg)
 }
 DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 {
-	/*std::vector<MonsterInfo>::iterator monsterInfoIter;
-	monsterInfoIter = monsterVector.begin();*/
 	std::cout << "monsterPosUpdate" << std::endl;
 
 	float firstPosition[10];
 	float monsterDirection[10];
 	float moveRange = 300;
 	int retval = 0;
+	float leftTime = 1.0f;
+	float nextTime = 0.0f;
 
-	std::chrono::system_clock::time_point nowTime;
-	std::chrono::system_clock::time_point nextTime;
-	std::chrono::duration<double> DefaultSec;
 	MonsterPosForSend forSend;
 
 	//몬스터들의 방향 랜덤하게 초기화.
 	for (int i = 0; i < 10; ++i)
 	{
 		firstPosition[i] = monsterVector[i].MonsterPos.x;
-		
-		monsterDirection[i] = rand()%2 -1;
+
+		monsterDirection[i] = rand() % 2 - 1;
 		if (monsterDirection[i] == 0)
 			monsterDirection[i] = 1;
 	}
-	
-	while(true)
+	int monsterType = 2;
+	while (true)
 	{
 		for (int i = 0; i < 10; ++i)
 		{
@@ -153,48 +150,83 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 			if (monsterVector[i].MonsterPos.x > firstPosition[i] + moveRange)
 				monsterDirection[i] *= -1;
 		}
-
-		for(int i = 0;i<10;++i)
+		for (int i = 0; i<10; ++i)
 		{
-			monsterVector[i].MonsterPos.x += (0.00005*monsterDirection[i]);
+			monsterVector[i].MonsterPos.x += (0.0001*monsterDirection[i]);
 			forSend.monsters[i] = monsterVector[i];
 		}
 
-		nowTime = std::chrono::system_clock::now();
-		DefaultSec = nowTime - nextTime;
-		if (0.5 < DefaultSec.count())			//시간 조절해서 샌드가능.
+		auto nowTime = std::clock();
+		if (nowTime >= nextTime)
 		{
+			for (int i = 0; i<2;++i)
+			{
+				retval = send(client_sockForMPU[i], (char*)&monsterType, sizeof(int), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					std::cout << "send에러1" << std::endl;
+				}
+			}
+			
 			for (int i = 0; i < 2; ++i)
 			{
+			
 				retval = send(client_sockForMPU[i], (char*)&forSend, sizeof(MonsterPosForSend), 0);
 				if (retval == SOCKET_ERROR)
 				{
-					std::cout << "send에러" << std::endl;
+					std::cout << "send에러2" << std::endl;
 				}
-				//std::cout << "샌드했음" << std::endl;
 			}
-			nextTime = std::chrono::system_clock::now();
+			nextTime = (std::clock()) + leftTime;
 		}
 	}
 }
 DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 {
+	std::cout << "쓰레드 시작!" << std::endl;
 	SOCKET client_sock = (SOCKET)param;
 	SOCKADDR_IN clientaddr;
 	//getpeername(client_sock,(SOCKADDR*)&clientaddr,&addrlen);
 
 	COperator calculate = { &playerVector, &monsterVector, &bulletVector };
-
+	
 	int retval;			//return value
 	char buf[BUFSIZE];
-	
+	int dataType=0;
+	PlayerInfo a;
 	while (true)				//이 함수내에서 send,recv 작업이 이루어짐.
 	{
-		retval = recv(client_sock, buf, sizeof(buf), 0);
+		std::cout << "recv대기중.." << std::endl;
+		retval = recv(client_sock, (char*)&dataType, sizeof(int), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			std::cout << "리시브 에러1" << std::endl;
+		}
+		std::cout << "tq" << std::endl;
+		if (DataType::PLAYER == dataType)
+		{
+			retval = recv(client_sock, (char*)&a, sizeof(PlayerInfo), 0);
+			if (retval == SOCKET_ERROR)
+			{
+				std::cout << "리시브 에러2" << std::endl;
+			}
+			
+			calculate.PlayerPosUpdate(a);
+
+			retval = send(client_sock, (char*)&a.playerIndex, sizeof(int), 0);
+			if (retval == SOCKET_ERROR)
+			{
+				std::cout << "샌드 에러1" << std::endl;
+			}
+			retval = send(client_sock, (char*)&playerVector[a.playerIndex], sizeof(PlayerInfo), 0);
+			if (retval == SOCKET_ERROR)
+			{
+				std::cout << "샌드 에러2" << std::endl;
+			}
+		}
 
 		//오류검사문 필요
-		calculate.Update();
-		retval = send(client_sock, buf, sizeof(buf), 0);
+		//calculate.Update();
 	}
 	return 0;
 }
@@ -204,7 +236,7 @@ void CThreadManager::Update()
 	Init();
 
 	std::cout << "초기값 전송" << std::endl;
-	for(int i =0 ;i<2;++i)
+	for (int i = 0; i<2; ++i)
 	{
 		retval = send(client_sock[i], (char*)&initInform, sizeof(InitInfo), 0);			//게임 초기값 전송.
 		if (retval == SOCKET_ERROR)
@@ -250,7 +282,7 @@ void CThreadManager::Update()
 	ResumeThread(hMonPosUpdateHandle);
 
 	std::cout << "쓰레드 3개 종료?" << std::endl;
-	WaitForMultipleObjects(2,hThreadHandle,TRUE,INFINITE);
+	WaitForMultipleObjects(2, hThreadHandle, TRUE, INFINITE);
 	WaitForSingleObject(hMonPosUpdateHandle, INFINITE);
 	std::cout << "쓰레드 3개 종료!" << std::endl;
 }

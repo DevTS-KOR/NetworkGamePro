@@ -47,6 +47,7 @@ struct PlayerInfo					//플레이어의 정보를 담당하는 구조체
 	Vec3 PlayerPos;					//플레이어의 위치를 담당
 	Vec3 CameraDir;					//플레이어의 방향을 담당
 	bool AniandKeyState;			//키의 눌림 여부 담당
+	unsigned char charKey;			//어떤 키?
 };
 
 struct BulletInfo					//총알의 정보를 담당하는 구조체
