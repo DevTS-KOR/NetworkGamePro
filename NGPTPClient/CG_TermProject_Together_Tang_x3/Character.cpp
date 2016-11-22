@@ -171,12 +171,12 @@ GLvoid CCharacter::Draw()
 
 GLvoid CCharacter::Update()
 {
-	if (m_bKeyUpState[KEYUP_UP])
+	if (m_bKeyUpState[KEYUP_UP])		//w
 	{
 		m_tPosition.fX += m_fSpeed * cos((-m_fCameraRotate.fX - 90) * PI / 180);
 		m_tPosition.fZ += m_fSpeed * sin((-m_fCameraRotate.fX - 90) * PI / 180);
 	}
-	if (m_bKeyUpState[KEYUP_DOWN])
+	if (m_bKeyUpState[KEYUP_DOWN])		//s
 	{
 		m_tPosition.fX -= m_fSpeed * cos((-m_fCameraRotate.fX - 90) * PI / 180);
 		m_tPosition.fZ -= m_fSpeed * sin((-m_fCameraRotate.fX - 90) * PI / 180);

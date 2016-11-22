@@ -12,9 +12,14 @@
 #include <stdio.h>
 #include <tchar.h>
 
+<<<<<<< HEAD
+//#define SERVERIP "127.0.0.1"
+#define SERVERIP "192.168.83.243"
+=======
 #define SERVERIP "127.0.0.1"//"192.168.83.243"
 
 
+>>>>>>> origin/master
 #define SERVERPORT	9000
 #define BUFSIZE		512
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.

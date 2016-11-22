@@ -68,6 +68,10 @@ GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 	//glPopMatrix();
 	m_iBlendcubeAngle = 0;
 	m_iClear = 0;
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/master
 	Sleep(500);
 	hThread = CreateThread(NULL, 0, MyThread, NULL, 0, NULL);
 }
@@ -190,6 +194,7 @@ GLvoid CInGame::Render(GLvoid)
 					//m_vpMonster.clear();
 					
 					auto iter = m_vpMonster.begin();
+					
 					for (int i = 0; i < 10; i++)
 					{
 						dynamic_cast<CMonster*>(*iter)->SetPosition(CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos);
@@ -447,6 +452,7 @@ DWORD WINAPI MyThread(LPVOID arg)
 {
 	while (true)
 	{
+		
 		CSceneMgr::GetInst()->SetMonsterPos();
 	}
 	return 0;
@@ -454,6 +460,8 @@ DWORD WINAPI MyThread(LPVOID arg)
 
 GLvoid CInGame::Mouse(int button, int state, int x, int y)
 {
+	//cout << "움직임1" << endl;
+
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		PlaySound(TEXT("Sound\\총격.wav"), NULL, SND_ASYNC);
@@ -484,6 +492,7 @@ GLvoid CInGame::Mouse(int button, int state, int x, int y)
 
 GLvoid CInGame::MouseMotionFunc(int x, int y)
 {
+	//cout << "움직임2" << endl;
 	Vec2	MousePos;
 	MousePos.fX = 400 - x;
 	MousePos.fY = 400 - y;
@@ -505,11 +514,12 @@ GLvoid CInGame::MouseMotionFunc(int x, int y)
 	}
 
 	DYNAMIC(CCharacter*, m_pCharacter)->SetCameraRotate(
-		DYNAMIC(CCharacter*, m_pCharacter)->GetCameraRotate().fX + (m_MousePos.fX * 7.5f/**0.5*/ / m_iMouseSens)
+		DYNAMIC(CCharacter*, m_pCharacter)->GetCameraRotate().fX + (m_MousePos.fX * 5.0f/**0.5*/ / m_iMouseSens)
 		, 1);
 	DYNAMIC(CCharacter*, m_pCharacter)->SetCameraRotate(
-		DYNAMIC(CCharacter*, m_pCharacter)->GetCameraRotate().fY + (m_MousePos.fY * 7.5f/**0.5*/ / m_iMouseSens)
+		DYNAMIC(CCharacter*, m_pCharacter)->GetCameraRotate().fY + (m_MousePos.fY * 5.0f/**0.5*/ / m_iMouseSens)
 		, 2);
+
 
 	//좌표가 반대로 되어있더라
 	//if (abs(m_MousePos.fX) >= 400.f)
@@ -533,6 +543,7 @@ GLvoid CInGame::MouseMotionFunc(int x, int y)
 		"Y " << m_View.fY <<
 		"Z " << m_View.fZ << endl;*/
 
+	//cout << DYNAMIC(CCharacter*, m_pCharacter)->GetCameraRotate().fX << ", " << DYNAMIC(CCharacter*, m_pCharacter)->GetCameraRotate().fY << ", " << DYNAMIC(CCharacter*, m_pCharacter)->GetCameraRotate().fZ << endl;
 
 	glutPostRedisplay();
 }
