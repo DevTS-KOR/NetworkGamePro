@@ -52,7 +52,8 @@ void CServer::Update()
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR)
 		err_quit("Listen()");
-	 
+	/*hTempHandle = CreateThread(
+		NULL, 0, CServer::tempThread, NULL, 0, NULL);*/
 	while (true)
 	{
 		//Accept
@@ -77,4 +78,29 @@ CServer::~CServer()
 {
 	closesocket(listen_sock);
 	WSACleanup();
+}
+DWORD WINAPI CServer::tempThread(LPVOID param)
+{
+	int nextTime = 0;
+	int leftTime = 1000 ;
+	int nowTime;
+	while (true)
+	{
+		
+		nowTime = std::clock();
+		if (nowTime > nextTime)
+		{
+			std::cout << "1" << std::endl;
+			for (int i = 0; i < 100; ++i)
+			{
+				//std::cout << "»÷µåÇßÀ½" << std::endl;
+			}
+
+			nextTime = std::clock() + leftTime;
+			std::cout << "nowTime" << int(nowTime) << std::endl;
+			/*	cout << "nextTime" << int(nextTime) << endl;
+			cout << "leftTime" << int(leftTime) << endl;*/
+
+		}
+	}
 }

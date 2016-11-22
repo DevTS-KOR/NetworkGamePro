@@ -1,25 +1,2 @@
-﻿  stdafx.cpp
-  Weather.cpp
-  TimerManager.cpp
-  SceneMgr.cpp
-c:\users\ddous\documents\networkgameprogramming termproject\networkgamepro\ngptpclient\cg_termproject_together_tang_x3\scenemgr.cpp(195): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1850): note: 'inet_addr' 선언을 참조하십시오.
-  Scene.cpp
-  Monster.cpp
-  MainGame.cpp
-  Logo.cpp
-  Lobby.cpp
-  Item.cpp
-  InResult.cpp
-  InGame.cpp
-  GameObject.cpp
-  Bunker.cpp
-  Character.cpp
-  CG_TermProject_Together_Tang_x3.cpp
-  Bullet.cpp
-  Building.cpp
-  BitmapMgr.cpp
-  코드를 생성하고 있습니다...
-c:\users\ddous\documents\networkgameprogramming termproject\networkgamepro\ngptpclient\cg_termproject_together_tang_x3\bitmapmgr.cpp(397): warning C4715: 'CBitmapMgr::GetTexture': 모든 제어 경로에서 값을 반환하지는 않습니다.
-  CG_TermProject_Together_Tang_x3.vcxproj -> C:\Users\ddous\Documents\NetworkGameProgramming TermProject\NetworkGamePro\NGPTPServer\Debug\CG_TermProject_Together_Tang_x3.exe
-  CG_TermProject_Together_Tang_x3.vcxproj -> C:\Users\ddous\Documents\NetworkGameProgramming TermProject\NetworkGamePro\NGPTPServer\Debug\CG_TermProject_Together_Tang_x3.pdb (Full PDB)
+﻿  CG_TermProject_Together_Tang_x3.vcxproj -> C:\Users\ddous\Documents\NetworkGameProgramming TermProject\NetworkGamePro\NGPTPClient\Debug\CG_TermProject_Together_Tang_x3.exe
+  CG_TermProject_Together_Tang_x3.vcxproj -> C:\Users\ddous\Documents\NetworkGameProgramming TermProject\NetworkGamePro\NGPTPClient\Debug\CG_TermProject_Together_Tang_x3.pdb (Full PDB)

@@ -68,7 +68,7 @@ GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 	//glPopMatrix();
 	m_iBlendcubeAngle = 0;
 	m_iClear = 0;
-
+	Sleep(500);
 	hThread = CreateThread(NULL, 0, MyThread, NULL, 0, NULL);
 }
 

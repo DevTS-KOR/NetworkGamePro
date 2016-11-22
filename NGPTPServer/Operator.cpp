@@ -32,33 +32,62 @@ void COperator::Update()		//recv¹ÞÀº°Å ¾î¶»°Ô ³Ñ±æÁö °í¹ÎÇØ¾ßÇÒµí.
 void COperator::PlayerPosUpdate(PlayerInfo param)
 {
 	PlayerInfo a=param;
-	std::cout << "playerposupdateÈ£Ãâ" << std::endl;
+	std::cout << "PlayerPosUpdateÈ£Ãâ" << std::endl;
 	std::cout << a.playerIndex << std::endl;
 	if (a.playerIndex == 1)
 	{
 		if (a.charKey == 'w')
 		{
-			std::cout << "wÅ°¿È" << std::endl;
-			playerIter->PlayerPos.x = 1;// 1´ë½Å recv¹ÞÀº°ª
+			std::cout << "p1 wÅ°¿È" << std::endl;
+			playerVecForCalcul->at(0).PlayerPos.z -= 1;
+			std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
 		}
 		if (a.charKey == 's')
 		{
-
+			std::cout << "p1 sÅ°¿È" << std::endl;
+			playerVecForCalcul->at(0).PlayerPos.z += 1;
+			std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
 		}
 		if (a.charKey == 'a')
 		{
-
+			std::cout << "p1 aÅ°¿È" << std::endl;
+			playerVecForCalcul->at(0).PlayerPos.x -= 1;
+			std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
 		}
 		if (a.charKey == 'd')
 		{
-
+			std::cout << "p1 dÅ°¿È" << std::endl;
+			playerVecForCalcul->at(0).PlayerPos.x += 1;
+			std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
 		}
 	}
-	else//a.playerIndex==2
+	else if(a.playerIndex==2)
 	{
-		++playerIter;
-		playerIter->PlayerPos.x;
-		--playerIter;
+		std::cout << a.playerIndex << std::endl;
+		if (a.charKey == 'w')
+		{
+			std::cout << "p2 wÅ°¿È" << std::endl;
+			playerVecForCalcul->at(1).PlayerPos.z -= 1;
+			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+		}
+		if (a.charKey == 's')
+		{
+			std::cout << "p2 sÅ°¿È" << std::endl;
+			playerVecForCalcul->at(1).PlayerPos.z += 1;
+			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+		}
+		if (a.charKey == 'a')
+		{
+			std::cout << "p2 aÅ°¿È" << std::endl;
+			playerVecForCalcul->at(1).PlayerPos.x -= 1;
+			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+		}
+		if (a.charKey == 'd')
+		{
+			std::cout << "p2 dÅ°¿È" << std::endl;
+			playerVecForCalcul->at(1).PlayerPos.x += 1;
+			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+		}
 	}
 }
 

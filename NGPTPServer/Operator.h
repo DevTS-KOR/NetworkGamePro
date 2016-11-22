@@ -3,6 +3,7 @@
 #include <WinSock2.h>
 #include <iostream>
 #include <vector>
+#include <Windows.h>
 #include "Protocol.h"
 
 #define BUFSIZE 512

@@ -12,6 +12,7 @@ public:
 	void err_display(char * msg);
 	void Update();
 	void MakeThreadManager();
+	static DWORD WINAPI tempThread(LPVOID);		//몬스터 위치값 실시간 움직여줌.
 private:
 	WSADATA wsaData;
 	SOCKADDR_IN server_addr;	// 서버 소켓 주소 구조체
@@ -21,5 +22,7 @@ private:
 	int retval;					// return Value 값 받는 변수
 	int m_ClientNum = 0;		// 클라 몇개 접속했는지
 	int addrlen;				// 주소 길이
+
+	HANDLE hTempHandle;
 };
 
