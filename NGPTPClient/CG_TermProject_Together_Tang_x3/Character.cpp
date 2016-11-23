@@ -166,6 +166,8 @@ GLvoid CCharacter::Draw()
 		glPopMatrix();
 	}*/
 	
+	//cout << "빙고 : " << m_tPosition2.fX << ", " << m_tPosition2.fY << ", " << m_tPosition2.fZ << endl;
+
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -417,4 +419,14 @@ void CCharacter::SetCharPosition(InitInfo* _InitInfo)
 		m_tPosition = _InitInfo->Player2Pos;
 		m_tPosition2 = _InitInfo->Player1Pos;
 	}
+}
+
+void CCharacter::SetCharRecvPosition(InitInfo* _InitInfo, PlayerInfo* _PlayerInfo)
+{
+	if (_InitInfo->playerIndex != _PlayerInfo->playerIndex)
+	{
+		//cout << "들어온값 : " << _PlayerInfo.PlayerPos.fX << ", " << _PlayerInfo.PlayerPos.fY << ", " << _PlayerInfo.PlayerPos.fZ << endl;
+		m_tPosition2 = _PlayerInfo->PlayerPos;
+	}
+
 }

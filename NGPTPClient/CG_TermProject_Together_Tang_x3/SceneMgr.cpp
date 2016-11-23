@@ -6,10 +6,13 @@
 #include "BitmapMgr.h"
 #include "InGame.h"
 #include "InResult.h"
+#include "GameObject.h"
+#include "Character.h"
 CSceneMgr* CSceneMgr::m_pInst = NULL;
 InitInfo* CSceneMgr::strInitInfo = NULL;
 SceneInfo* CSceneMgr::strSceneInfo = NULL;
 MonsterPosForRecv* CSceneMgr::strMonsterPos = NULL;
+PlayerInfo* CSceneMgr::strPlayerInfo = NULL;
 unsigned char CSceneMgr::charKey = 0;
 
 CSceneMgr::CSceneMgr() :m_pScene(NULL)
@@ -27,6 +30,7 @@ CSceneMgr::CSceneMgr() :m_pScene(NULL)
 	retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR)
 		err_quit("connect()");*/
+
 }
 
 
@@ -111,41 +115,63 @@ SceneInfo * CSceneMgr::GetSceneInfo()
 	return strSceneInfo;
 }
 
-void CSceneMgr::SetMonsterPos()
+void CSceneMgr::RecvServer()
 {
-	//cout << "받았어요1" << endl;
 	int retval;
-	char buf[BUFSIZE];
-	
-	int dataType;
-	retval = recvn(sock, (char*)&dataType, sizeof(dataType), 0);
-	if (retval == SOCKET_ERROR)
-		err_quit("recv()");
+	int dataType = 0;
+	MonsterPosForRecv		tempMonsterPos;
+	PlayerInfo				tempInfo;
 
-	if (dataType == 0)
+	while (true)
 	{
-		/*retval = recvn(sock, (char*)&tempPlayerInfo, sizeof(MonsterPosForRecv), 0);
-		if (retval == SOCKET_ERROR)
-			err_quit("recv()");*/
-
-
-	}
-
-	if (dataType == 2)
-	{
-		retval = recvn(sock, (char*)&tempMonsterPos, sizeof(MonsterPosForRecv), 0);
+		retval = recv(sock, (char*)&dataType, sizeof(int), 0);
 		if (retval == SOCKET_ERROR)
 			err_quit("recv()");
 
-		//cout << "받았어요2" << endl;
-		//tempMonsterPos = (MonsterPosForRecv&)buf;
-		strMonsterPos = &tempMonsterPos;
+		if (dataType == DataType::PLAYER)
+		{
+			retval = recv(sock, (char*)&tempInfo, sizeof(PlayerInfo), 0);
+			if (retval == SOCKET_ERROR)
+				err_quit("recv()");
+
+			strPlayerInfo = &tempInfo;
+			//cout << "받은 인덱스 : " << strPlayerInfo->playerIndex << endl;
+			//cout << "받은값 : " << strPlayerInfo->PlayerPos.fX << ", " << strPlayerInfo->PlayerPos.fY << ", " << strPlayerInfo->PlayerPos.fZ << endl << endl;
+			dynamic_cast<CCharacter*>(m_pCharacter)->SetCharRecvPosition(GetInitInfo(), GetPlayerPos());
+		}
+
+		else if (dataType == DataType::MONSTER)
+		{
+			//cout << "니가1" << endl;
+
+			retval = recv(sock, (char*)&tempMonsterPos, sizeof(MonsterPosForRecv), 0);
+			if (retval == SOCKET_ERROR)
+				err_quit("recv()");
+
+			strMonsterPos = &tempMonsterPos;
+
+			//cout << "니가2" << endl << endl;
+		}
+
+		else
+		{
+			char buf[BUFSIZE];
+			retval = recvn(sock, (char*)&buf, 0, 0);
+			if (retval == SOCKET_ERROR)
+				err_quit("recv()");
+			cout << "똥" << endl;
+		}
 	}
 }
 
 MonsterPosForRecv* CSceneMgr::GetMonsterPos()
 {
 	return strMonsterPos;
+}
+
+PlayerInfo* CSceneMgr::GetPlayerPos()
+{
+	return strPlayerInfo;
 }
 
 int CSceneMgr::recvn(SOCKET s, char * buf, int len, int flags)
@@ -173,7 +199,7 @@ void CSceneMgr::SetKey(unsigned char _Key)
 	//SendKey();
 }
 
-void CSceneMgr::SendKey()
+void CSceneMgr::SendKey(Vec3 _Position)
 {
 	int retval;
 	int dataType = 0;
@@ -183,13 +209,64 @@ void CSceneMgr::SendKey()
 		err_display("send()");
 
 	//char buf[BUFSIZE];
-	tempPlayerInfo.PlayerIndex = strInitInfo->playerIndex;
+	//cout << "보낸 인덱스 : " << strInitInfo->playerIndex << endl;
+	tempPlayerInfo.playerIndex = strInitInfo->playerIndex;
 	tempPlayerInfo.AniandKeyState = true;
 	tempPlayerInfo.charKey = charKey;
-	
+	tempPlayerInfo.PlayerPos = _Position; 
+	tempPlayerInfo.CameraDir = { 0 };
+	tempPlayerInfo.type = 0;
+	//cout << "이친구를 보냄 : " << tempPlayerInfo.PlayerPos.fX << ", " << tempPlayerInfo.PlayerPos.fY << ", " << tempPlayerInfo.PlayerPos.fZ << endl;
 	retval = send(sock, (char*)&tempPlayerInfo, sizeof(PlayerInfo), 0);
 	if (retval == SOCKET_ERROR)
 		err_display("send()");
+	
+	//스레드로 만들어서 타입으로 해보기
+
+	
+
+	//else
+	//{
+		/*char buf[BUFSIZE];
+		retval = recv(sock, (char*)&buf, sizeof(PlayerInfo), 0);
+		if (retval == SOCKET_ERROR)
+			err_quit("recv()");*/
+	//}
+
+}
+
+void CSceneMgr::RecvKey()
+{
+	/*int dataType = 0;
+
+	retval = recv(sock, (char*)&dataType, sizeof(dataType), 0);
+	if (retval == SOCKET_ERROR)
+		err_quit("recv()");
+
+
+	if (dataType == DataType::PLAYER)
+	{
+		retval = recv(sock, (char*)&tempInfo, sizeof(PlayerInfo), 0);
+		if (retval == SOCKET_ERROR)
+			err_quit("recv()");
+
+		strPlayerInfo = &tempInfo;
+		//cout << "temp값 : " << tempInfo.playerIndex << endl;
+		cout << "인덱스 : " << strPlayerInfo->playerIndex << endl;
+		cout << "받은값 : " << strPlayerInfo->PlayerPos.fX << ", " << strPlayerInfo->PlayerPos.fY << ", " << strPlayerInfo->PlayerPos.fZ << endl;
+		//cout << "받은값 : " << strPlayerInfo->PlayerPos.fX << ", " << strPlayerInfo->PlayerPos.fY << ", " << strPlayerInfo->PlayerPos.fZ << endl;
+		//strPlayerInfo.PlayerIndex += 1;
+		//dynamic_cast<CCharacter*>(m_pCharacter)->SetCharRecvPosition(CSceneMgr::GetInitInfo(), CSceneMgr::GetPlayerPos());
+	}
+
+	else
+	{
+		char buf[BUFSIZE];
+		retval = recv(sock, (char*)&buf, sizeof(PlayerInfo), 0);
+		if (retval == SOCKET_ERROR)
+		err_quit("recv()");
+		cout << "플레이어 똥" << endl;
+	}*/
 }
 
 

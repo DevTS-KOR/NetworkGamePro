@@ -50,6 +50,7 @@ public:
 	void	SetCameraRotate(float _fPos, int _Type);
 	void	SetCameraDistance(int _iDistance);
 	void	SetCharPosition(InitInfo* _InitInfo);
+	void	SetCharRecvPosition(InitInfo* _InitInfo, PlayerInfo* _PlayerInfo);
 	//void	SetCameraRotate(float _fX, float _fY, float _fZ);
 
 

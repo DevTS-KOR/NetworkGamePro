@@ -3,10 +3,13 @@
 #include "Common.h"
 class CScene;
 class CBitmapMgr;
+class CGameObject;
+class CCharacter;
 class CSceneMgr
 {
 	static CSceneMgr*		m_pInst;
 	CScene*					m_pScene;
+	CGameObject*			m_pCharacter;
 	// 윈속 초기화
 	WSADATA					wsa;
 	// socket()
@@ -22,9 +25,9 @@ class CSceneMgr
 	SceneInfo				tempSceneInfo;
 
 	static MonsterPosForRecv* strMonsterPos;
-	MonsterPosForRecv		tempMonsterPos;
 
 	static PlayerInfo*		strPlayerInfo;
+
 
 	static unsigned char	charKey;
 	PlayerInfo				tempPlayerInfo;
@@ -57,12 +60,19 @@ public:
 	void RecvSpace();
 	static SceneInfo* GetSceneInfo();
 
-	void SetMonsterPos();
+	void RecvServer();
 	static MonsterPosForRecv* GetMonsterPos();
+
+	static PlayerInfo* GetPlayerPos();
 	int recvn(SOCKET s, char* buf, int len, int flags);
 
 	static void SetKey(unsigned char _Key);
-	void SendKey();
+	void SendKey(Vec3 _Position);
+	void RecvKey();
+	void SetCharClass(CGameObject* _pChar)
+	{
+		m_pCharacter = _pChar;
+	}
 	//void PlayerRender();
 	//void MonsterRender();
 	//void ContainerRender();

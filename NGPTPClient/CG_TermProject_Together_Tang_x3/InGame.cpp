@@ -10,6 +10,7 @@ extern	int		g_iWindow_Width;
 extern int		g_iWindow_Height;
 #define	DYNAMIC(Class,Pointer)	dynamic_cast<Class>(Pointer)
 DWORD WINAPI MyThread(LPVOID arg);
+DWORD WINAPI RecvCharPosition(LPVOID arg);
 
 CInGame::CInGame()
 {
@@ -41,6 +42,8 @@ GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 	m_pMonster = new CMonster(_pBitmapMgr);
 	m_pBuilding = new CBuilding(_pBitmapMgr);
 	m_pCharacter = new CCharacter(_pBitmapMgr);
+	CSceneMgr::GetInst()->SetCharClass(m_pCharacter);
+
 	for (size_t i = 0; i < 200; i++)
 		cWeather[i].Initialize();
 	for (size_t i = 0; i < 3; i++)
@@ -68,12 +71,11 @@ GLvoid CInGame::Initialize(CBitmapMgr* _pBitmapMgr)
 	//glPopMatrix();
 	m_iBlendcubeAngle = 0;
 	m_iClear = 0;
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 	Sleep(500);
 	hThread = CreateThread(NULL, 0, MyThread, NULL, 0, NULL);
+	//WaitForSingleObject(hThread, INFINITE);
+	//hThread = CreateThread(NULL, 0, RecvCharPosition, NULL, 0, NULL);
 }
 
 GLvoid CInGame::Render(GLvoid)
@@ -193,6 +195,7 @@ GLvoid CInGame::Render(GLvoid)
 					m_pCharacter->Draw();
 					//m_vpMonster.clear();
 					
+					/*CSceneMgr::GetInst()->SetMonsterPos();
 					auto iter = m_vpMonster.begin();
 					
 					for (int i = 0; i < 10; i++)
@@ -201,13 +204,13 @@ GLvoid CInGame::Render(GLvoid)
 						iter++;
 						if(i == 9)
 							iter = m_vpMonster.begin();
-					}
+					}*/
 
 						/*m_vpMonster.push_back(new CMonster(m_pBitmapMgr, 
 							CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos.fX, 
 							CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos.fZ));*/
 					
-					for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
+					/*for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
 					{
 						glPushMatrix();
 						{
@@ -222,7 +225,7 @@ GLvoid CInGame::Render(GLvoid)
 							(*iter)->Draw();
 						}
 						glPopMatrix();
-					}
+					}*/
 
 				}
 				glPopMatrix();
@@ -369,7 +372,8 @@ GLvoid CInGame::Keyboard(unsigned char key, int x, int y)
 	}
 
 	CSceneMgr::GetInst()->SetKey(key);
-	CSceneMgr::GetInst()->SendKey();
+	CSceneMgr::GetInst()->SendKey(dynamic_cast<CCharacter*>(m_pCharacter)->GetPosition());
+	//dynamic_cast<CCharacter*>(m_pCharacter)->SetCharRecvPosition(CSceneMgr::GetInitInfo(), CSceneMgr::GetPlayerPos());
 
 	glutPostRedisplay();
 }
@@ -450,10 +454,17 @@ GLvoid CInGame::Update(int value)
 
 DWORD WINAPI MyThread(LPVOID arg)
 {
+	
+	CSceneMgr::GetInst()->RecvServer();
+	
+	return 0;
+}
+
+DWORD WINAPI RecvCharPosition(LPVOID arg)
+{
 	while (true)
 	{
-		
-		CSceneMgr::GetInst()->SetMonsterPos();
+		CSceneMgr::GetInst()->RecvKey();
 	}
 	return 0;
 }
