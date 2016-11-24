@@ -24,6 +24,9 @@ private:
 	HANDLE hThreadHandle[2];						// 소켓들 간의 통신 스레드 핸들값.
 	HANDLE hMonPosUpdateHandle;						// MonsterPosUPdate 스레드 핸들값.
 
+	/*static HANDLE hEventMonsterUpdate;
+	static HANDLE hEventPlayerThread;*/
+	//HANDLE hEventPlayer2Thread;
 	
 
 	static std::vector<PlayerInfo> playerVector;	// Player정보 관리 배열. Maxsize = 2.
