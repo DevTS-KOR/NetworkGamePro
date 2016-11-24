@@ -195,7 +195,7 @@ GLvoid CInGame::Render(GLvoid)
 					m_pCharacter->Draw();
 					//m_vpMonster.clear();
 					
-					/*CSceneMgr::GetInst()->SetMonsterPos();
+					//CSceneMgr::GetInst()->SetMonsterPos();
 					auto iter = m_vpMonster.begin();
 					
 					for (int i = 0; i < 10; i++)
@@ -204,13 +204,13 @@ GLvoid CInGame::Render(GLvoid)
 						iter++;
 						if(i == 9)
 							iter = m_vpMonster.begin();
-					}*/
+					}
 
 						/*m_vpMonster.push_back(new CMonster(m_pBitmapMgr, 
 							CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos.fX, 
 							CSceneMgr::GetInst()->GetMonsterPos()->monsters[i].MonsterPos.fZ));*/
 					
-					/*for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
+					for (auto iter = m_vpMonster.begin(); iter != m_vpMonster.end(); ++iter)
 					{
 						glPushMatrix();
 						{
@@ -225,7 +225,7 @@ GLvoid CInGame::Render(GLvoid)
 							(*iter)->Draw();
 						}
 						glPopMatrix();
-					}*/
+					}
 
 				}
 				glPopMatrix();

@@ -135,14 +135,14 @@ void CSceneMgr::RecvServer()
 				err_quit("recv()");
 
 			strPlayerInfo = &tempInfo;
-			//cout << "받은 인덱스 : " << strPlayerInfo->playerIndex << endl;
-			//cout << "받은값 : " << strPlayerInfo->PlayerPos.fX << ", " << strPlayerInfo->PlayerPos.fY << ", " << strPlayerInfo->PlayerPos.fZ << endl << endl;
+			cout << "받은 인덱스 : " << strPlayerInfo->playerIndex << endl;
+			cout << "받은값 : " << strPlayerInfo->PlayerPos.fX << ", " << strPlayerInfo->PlayerPos.fY << ", " << strPlayerInfo->PlayerPos.fZ << endl << endl;
 			dynamic_cast<CCharacter*>(m_pCharacter)->SetCharRecvPosition(GetInitInfo(), GetPlayerPos());
 		}
 
 		else if (dataType == DataType::MONSTER)
 		{
-			//cout << "니가1" << endl;
+			cout << "니가1" << endl;
 
 			retval = recv(sock, (char*)&tempMonsterPos, sizeof(MonsterPosForRecv), 0);
 			if (retval == SOCKET_ERROR)
@@ -150,7 +150,7 @@ void CSceneMgr::RecvServer()
 
 			strMonsterPos = &tempMonsterPos;
 
-			//cout << "니가2" << endl << endl;
+			cout << "니가2" << endl << endl;
 		}
 
 		else
@@ -216,7 +216,7 @@ void CSceneMgr::SendKey(Vec3 _Position)
 	tempPlayerInfo.PlayerPos = _Position; 
 	tempPlayerInfo.CameraDir = { 0 };
 	tempPlayerInfo.type = 0;
-	//cout << "이친구를 보냄 : " << tempPlayerInfo.PlayerPos.fX << ", " << tempPlayerInfo.PlayerPos.fY << ", " << tempPlayerInfo.PlayerPos.fZ << endl;
+	cout << "이친구를 보냄 : " << tempPlayerInfo.PlayerPos.fX << ", " << tempPlayerInfo.PlayerPos.fY << ", " << tempPlayerInfo.PlayerPos.fZ << endl;
 	retval = send(sock, (char*)&tempPlayerInfo, sizeof(PlayerInfo), 0);
 	if (retval == SOCKET_ERROR)
 		err_display("send()");
