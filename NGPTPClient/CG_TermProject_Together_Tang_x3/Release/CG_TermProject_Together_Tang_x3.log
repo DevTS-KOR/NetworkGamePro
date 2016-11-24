@@ -5,7 +5,7 @@ SceneMgr.cpp(333): warning C4996: 'inet_addr': Use inet_pton() or InetPton() ins
   코드를 생성하고 있습니다.
   8 of 357 functions ( 2.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   CG_TermProject_Together_Tang_x3.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPClient\Release\CG_TermProject_Together_Tang_x3.exe
   CG_TermProject_Together_Tang_x3.vcxproj -> D:\Programming\NetworkgameTermProject\NetworkGamePro\NGPTPClient\Release\CG_TermProject_Together_Tang_x3.pdb (Full PDB)

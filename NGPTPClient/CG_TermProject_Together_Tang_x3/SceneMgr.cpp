@@ -142,7 +142,7 @@ void CSceneMgr::RecvServer()
 
 		else if (dataType == DataType::MONSTER)
 		{
-			cout << "니가1" << endl;
+			//cout << "니가1" << endl;
 
 			retval = recv(sock, (char*)&tempMonsterPos, sizeof(MonsterPosForRecv), 0);
 			if (retval == SOCKET_ERROR)
@@ -150,7 +150,7 @@ void CSceneMgr::RecvServer()
 
 			strMonsterPos = &tempMonsterPos;
 
-			cout << "니가2" << endl << endl;
+			//cout << "니가2" << endl << endl;
 		}
 
 		else

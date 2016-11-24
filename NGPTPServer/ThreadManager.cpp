@@ -29,7 +29,7 @@ CThreadManager::CThreadManager(SOCKET client_socket1, SOCKET client_socket2)
 	global_client_sock[0] = client_sock[0];
 	global_client_sock[1] = client_sock[1];
 	//Player1 Player2 순임
-	InitializeCriticalSection(&csForPlayer);
+	//InitializeCriticalSection(&csForPlayer);
 
 	//스레드 생성
 	hThreadHandle[0] = CreateThread(
@@ -42,17 +42,17 @@ CThreadManager::CThreadManager(SOCKET client_socket1, SOCKET client_socket2)
 		NULL, 0, CThreadManager::MonsterPosUpdate, NULL, CREATE_SUSPENDED, NULL);
 
 	//이벤트 생성
-	hEventMonsterUpdate = CreateEvent(NULL,FALSE,FALSE,0);
+	hEventMonsterUpdate = CreateEvent(NULL, TRUE, FALSE, 0);
 	if (hEventMonsterUpdate == nullptr)
 		std::cout << "hEventMonsterUpdate 생성 에러" << std::endl;
 
-	hEventPlayerThread = CreateEvent(NULL,FALSE,TRUE,0);
+	hEventPlayerThread = CreateEvent(NULL, TRUE, TRUE, 0);
 	if (hEventPlayerThread == nullptr)
 		std::cout << "hEventPlayer1Thread 생성 에러" << std::endl;
 
 	/*hEventPlayer2Thread = CreateEvent(NULL,FALSE,TRUE,0);
 	if (hEventPlayer2Thread == nullptr)
-		std::cout << "hEventPlayer2Thread 생성 에러" << std::endl;*/
+	std::cout << "hEventPlayer2Thread 생성 에러" << std::endl;*/
 }
 
 void CThreadManager::Init()
@@ -144,7 +144,7 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 	float monsterDirection[10];
 	float moveRange = 300;
 	int retval = 0;
-	float leftTime = (1000/60);
+	float leftTime = (1000 / 60);
 	float nextTime = 0.0f;
 	int nowTime = 0;
 	MonsterPosForSend forSend;
@@ -159,13 +159,15 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 			monsterDirection[i] = 1;
 	}
 	int monsterType = 2;
-	
+	Sleep(500);
+
 	while (true)
 	{
-		WaitForSingleObject(hEventPlayerThread,INFINITE);
+		WaitForSingleObject(hEventPlayerThread, INFINITE);
+		//std::cout << "MonsterTrheadWhileLoop" << std::endl;
 		nowTime = std::clock();
 		if (nowTime > nextTime)
-		{			
+		{
 			for (int i = 0; i < 10; ++i)
 			{
 				if (monsterVector[i].MonsterPos.x < firstPosition[i] - moveRange)
@@ -178,7 +180,7 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 				monsterVector[i].MonsterPos.x += (1 * monsterDirection[i]);
 				forSend.monsters[i] = monsterVector[i];
 			}
-
+			//////////////////
 
 			for (int i = 0; i < 2; ++i)
 			{
@@ -197,10 +199,11 @@ DWORD WINAPI CThreadManager::MonsterPosUpdate(LPVOID params)
 					std::cout << "send에러2" << std::endl;
 				}
 			}
-			
+
 			nextTime = std::clock() + leftTime;
+			SetEvent(hEventMonsterUpdate);
 		}
-		SetEvent(hEventMonsterUpdate);
+
 	}
 }
 DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
@@ -211,15 +214,15 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 	//getpeername(client_sock,(SOCKADDR*)&clientaddr,&addrlen);
 
 	COperator calculate = { &playerVector, &monsterVector, &bulletVector };
-	
-	int retval;			//return value
+
+	int retval;         //return value
 	char buf[BUFSIZE];
-	int dataType=0;
+	int dataType = 0;
 	PlayerInfo a;
-	
-	while (true)				//이 함수내에서 send,recv 작업이 이루어짐.
+
+	while (true)            //이 함수내에서 send,recv 작업이 이루어짐.
 	{
-		WaitForSingleObject(hEventMonsterUpdate,INFINITE);
+		//std::cout << "ThreadFuncWhileLoop" << std::endl;
 		std::cout << "recv대기중.." << std::endl;
 		retval = recv(client_sock, (char*)&dataType, sizeof(int), 0);
 		if (retval == SOCKET_ERROR)
@@ -236,10 +239,11 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 				std::cout << "리시브 에러2" << std::endl;
 			}
 			//EnterCriticalSection(&csForPlayer);
-			
-			calculate.PlayerPosUpdate(a,&playerVector);
+
+			calculate.PlayerPosUpdate(a, &playerVector);
 
 			//LeaveCriticalSection(&csForPlayer);
+			WaitForSingleObject(hEventMonsterUpdate, INFINITE);
 			for (int i = 0; i < 2; ++i)
 			{
 				retval = send(global_client_sock[i], (char*)&dataType, sizeof(int), 0);
@@ -250,17 +254,18 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 			}
 			for (int i = 0; i < 2; ++i)
 			{
-				retval = send(global_client_sock[i], (char*)&playerVector[a.playerIndex-1], sizeof(PlayerInfo), 0);
+				retval = send(global_client_sock[i], (char*)&a, sizeof(PlayerInfo), 0);
 				if (retval == SOCKET_ERROR)
 				{
 					std::cout << "샌드 에러2" << std::endl;
 				}
 			}
+			SetEvent(hEventPlayerThread);
 		}
 
 		//오류검사문 필요
 		//calculate.Update();
-		SetEvent(hEventPlayerThread);
+
 	}
 	return 0;
 }
@@ -272,7 +277,7 @@ void CThreadManager::Update()
 	std::cout << "초기값 전송" << std::endl;
 	for (int i = 0; i<2; ++i)
 	{
-		retval = send(client_sock[i], (char*)&initInform, sizeof(InitInfo), 0);			//게임 초기값 전송.
+		retval = send(client_sock[i], (char*)&initInform, sizeof(InitInfo), 0);         //게임 초기값 전송.
 		if (retval == SOCKET_ERROR)
 		{
 			err_display("send()");
@@ -282,10 +287,10 @@ void CThreadManager::Update()
 	std::cout << "초기값 전송 완료." << std::endl;
 
 
-	std::cout << "준비완료 메세지 수신" << std::endl;			// 아직은 첫번째 클라 두번째 클라 순으로 받아야함
-	for (int i = 0; i<2; ++i)									// 차후 수정 필요.
+	std::cout << "준비완료 메세지 수신" << std::endl;         // 아직은 첫번째 클라 두번째 클라 순으로 받아야함
+	for (int i = 0; i<2; ++i)                           // 차후 수정 필요.
 	{
-		retval = recv(client_sock[i], buf, sizeof(buf), 0);			//준비완료 메세지 수신. 수신사이즈 생각해야됨.
+		retval = recv(client_sock[i], buf, sizeof(buf), 0);         //준비완료 메세지 수신. 수신사이즈 생각해야됨.
 		if (retval == SOCKET_ERROR)
 		{
 			err_display("recv()");
@@ -295,11 +300,11 @@ void CThreadManager::Update()
 
 	std::cout << "씬전환 메세지 송신" << std::endl;
 
-	SceneInfo changeGameScene;			//8byte 전송.	
+	SceneInfo changeGameScene;         //8byte 전송.   
 	changeGameScene.type = DataType::SCENE;
 	changeGameScene.SceneState = SceneList::INGAME;
 
-	for (int i = 0; i < 2; ++i)				//send - 게임씬으로 넘어가라는 메세지 전송
+	for (int i = 0; i < 2; ++i)            //send - 게임씬으로 넘어가라는 메세지 전송
 	{
 		retval = send(client_sock[i], (char*)&changeGameScene, sizeof(SceneInfo), 0);
 		if (retval == SOCKET_ERROR)

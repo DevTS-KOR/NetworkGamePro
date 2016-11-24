@@ -17,9 +17,10 @@ CInGame::CInGame()
 	m_fWorldAngle = {};
 	
 	m_fWorldTranslate.fX = 0;
-	m_View = { 0 };
 	m_fWorldTranslate.fY = 0;
 	m_fWorldTranslate.fZ = 0;
+	m_View = { 0 };
+	m_MousePos = { 0 };
 	m_iMouseSens = 300;
 }
 

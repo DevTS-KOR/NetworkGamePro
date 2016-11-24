@@ -13,7 +13,7 @@
 #include <tchar.h>
 
 
-//#define SERVERIP "192.168.1.2"
+//#define SERVERIP "192.168.0.244"
 //#define SERVERIP "192.168.83.243"
 #define SERVERIP "127.0.0.1"
 
