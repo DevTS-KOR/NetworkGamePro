@@ -218,8 +218,8 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 	int retval;         //return value
 	char buf[BUFSIZE];
 	int dataType = 0;
-	PlayerInfo a;
-
+	PlayerInfo playerInfoForRS;
+	int playerIndex;
 	while (true)            //이 함수내에서 send,recv 작업이 이루어짐.
 	{
 		//std::cout << "ThreadFuncWhileLoop" << std::endl;
@@ -232,15 +232,17 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 		std::cout << "recv 완.." << std::endl;
 		if (DataType::PLAYER == dataType)
 		{
-
-			retval = recv(client_sock, (char*)&a, sizeof(PlayerInfo), 0);
+			retval = recv(client_sock, (char*)&playerInfoForRS, sizeof(PlayerInfo), 0);
 			if (retval == SOCKET_ERROR)
 			{
 				std::cout << "리시브 에러2" << std::endl;
 			}
 			//EnterCriticalSection(&csForPlayer);
+			playerIndex = playerInfoForRS.playerIndex;
+			calculate.PlayerPosUpdate(playerInfoForRS, &playerVector);
 
-			calculate.PlayerPosUpdate(a, &playerVector);
+			if (playerInfoForRS.PlayerPos.z == playerVector.at(playerIndex-1).PlayerPos.z)
+				std::cout << "PlayerInfoForRS == playerVector" << std::endl;
 
 			//LeaveCriticalSection(&csForPlayer);
 			WaitForSingleObject(hEventMonsterUpdate, INFINITE);
@@ -254,7 +256,7 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 			}
 			for (int i = 0; i < 2; ++i)
 			{
-				retval = send(global_client_sock[i], (char*)&a, sizeof(PlayerInfo), 0);
+				retval = send(global_client_sock[i], (char*)&playerInfoForRS, sizeof(PlayerInfo), 0);
 				if (retval == SOCKET_ERROR)
 				{
 					std::cout << "샌드 에러2" << std::endl;
@@ -315,10 +317,11 @@ void CThreadManager::Update()
 	std::cout << "씬전환 메세지 보내기 완료" << std::endl;
 
 	//ResumeThread 해주기전에 게임 초기값들 전송해주고 게임준비완료 되면 ResumeThread 해준다.
+	ResumeThread(hMonPosUpdateHandle);
 	ResumeThread(hThreadHandle[0]);
 	ResumeThread(hThreadHandle[1]);
 
-	ResumeThread(hMonPosUpdateHandle);
+	
 
 	std::cout << "쓰레드 3개 종료?" << std::endl;
 	WaitForMultipleObjects(2, hThreadHandle, TRUE, INFINITE);

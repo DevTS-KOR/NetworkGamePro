@@ -37,86 +37,57 @@ void COperator::PlayerPosUpdate(PlayerInfo param, std::vector <PlayerInfo>* vect
 
 	if (a.playerIndex == 1)
 	{
-		std::cout << "playerIter->playerindex : " << playerIter->playerIndex << std::endl;
-		std::cout << "PlayerIndex : " << a.playerIndex << std::endl;
-		std::cout << "x : " << playerIter->PlayerPos.x
-			<< "y : " << playerIter->PlayerPos.y
-			<< "z : " << playerIter->PlayerPos.z << std::endl;
-
 		if (a.charKey == 'w')
 		{
 			std::cout << "p1 wÅ°¿È" << std::endl;
 			a.PlayerPos.z -= 1;
-			//playerIter->PlayerPos.z -= 1;
-			//playerVecForCalcul->at(0).PlayerPos.z -= 1;
-			std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
+			vectorParam->at(0).PlayerPos.z -= 1;
 		}
 		if (a.charKey == 's')
 		{
 			std::cout << "p1 sÅ°¿È" << std::endl;
 			a.PlayerPos.z += 1;
-			playerIter->PlayerPos.z += 1;
-			//playerVecForCalcul->at(0).PlayerPos.z += 1;
-			//std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
+			vectorParam->at(0).PlayerPos.z += 1;
 		}
 		if (a.charKey == 'a')
 		{
 			std::cout << "p1 aÅ°¿È" << std::endl;
 			a.PlayerPos.x -= 1;
-			//playerIter->PlayerPos.x -= 1;
-			//playerVecForCalcul->at(0).PlayerPos.x -= 1;
-			std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
+			vectorParam->at(0).PlayerPos.x -= 1;
 		}
 		if (a.charKey == 'd')
 		{
 			std::cout << "p1 dÅ°¿È" << std::endl;
 			a.PlayerPos.x += 1;
-			//playerIter->PlayerPos.x += 1;
-			//playerVecForCalcul->at(0).PlayerPos.x += 1;
-			std::cout << playerVecForCalcul->at(0).PlayerPos.z << std::endl;
+			vectorParam->at(0).PlayerPos.x += 1;
 		}
 	}
 	else if (a.playerIndex == 2)
 	{
-		//++playerIter;
-		std::cout << "playerIter->playerindex : " << playerIter->playerIndex << std::endl;
-		std::cout << "PlayerIndex : " << a.playerIndex << std::endl;
-		std::cout << "x : " << playerIter->PlayerPos.x
-			<< "y : " << playerIter->PlayerPos.y
-			<< "z : " << playerIter->PlayerPos.z << std::endl;
 		if (a.charKey == 'w')
 		{
 			std::cout << "p2 wÅ°¿È" << std::endl;
 			a.PlayerPos.z -= 1;
-			//playerIter->PlayerPos.z -= 1;
-			//playerVecForCalcul->at(1).PlayerPos.z -= 1;
-			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+			vectorParam->at(1).PlayerPos.z -= 1;
 		}
 		if (a.charKey == 's')
 		{
 			std::cout << "p2 sÅ°¿È" << std::endl;
 			a.PlayerPos.z += 1;
-			//playerIter->PlayerPos.z += 1;
-			//playerVecForCalcul->at(1).PlayerPos.z += 1;
-			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+			vectorParam->at(1).PlayerPos.z += 1;
 		}
 		if (a.charKey == 'a')
 		{
 			std::cout << "p2 aÅ°¿È" << std::endl;
 			a.PlayerPos.x -= 1;
-			//playerIter->PlayerPos.x -= 1;
-			//playerVecForCalcul->at(1).PlayerPos.x -= 1;
-			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+			vectorParam->at(1).PlayerPos.x -= 1;
 		}
 		if (a.charKey == 'd')
 		{
 			std::cout << "p2 dÅ°¿È" << std::endl;
 			a.PlayerPos.x += 1;
-			//playerIter->PlayerPos.x += 1;
-			//playerVecForCalcul->at(1).PlayerPos.x += 1;
-			std::cout << playerVecForCalcul->at(1).PlayerPos.z << std::endl;
+			vectorParam->at(1).PlayerPos.x += 1;
 		}
-		//--playerIter;
 	}
 }
 
