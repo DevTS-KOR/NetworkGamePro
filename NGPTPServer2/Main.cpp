@@ -389,6 +389,7 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 				playerIndex = playerInfoForRS.playerIndex;
 
 				playerVector[playerIndex - 1].PlayerPos = playerInfoForRS.PlayerPos;
+				//요사이에 충돌체크 넣을거임
 				packet.player1 = playerInfoForRS;
 
 				printf("playerINfoFOrRS IN threadFUnc1 x : %f y :  %f  z :%f  \n",

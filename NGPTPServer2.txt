@@ -1,0 +1,72 @@
+Protocol.h 에
+
+struct DataPacket
+{
+	PlayerInfo player1;
+	PlayerInfo player2;
+	MonsterInfo monsters[10];
+
+};
+
+추가했음
+
+enum DataType						//데이터 타입의 구분 변수를 가진 열거형
+{
+	PLAYER,							//구분타입 -> 플레이어정보
+	BULLET,							//구분타입 -> 총알정보
+	MONSTER,						//구분타입 -> 몬스터정보
+	SCENE,							//구분타입 -> 씬정보
+	PACKET							//구분타입 -> 패킷 묶은거 데이터타입.
+};
+
+NULLDATA 빼버리고 PACKET추가함
+
+일단은 플레이어1,2 데이터하고 NPC10마리 데이터만 보냄.
+
+잘되면 총알 추가하고, 이것저것 추가할거임,
+
+
+DataPacket packet으로 전역변수로 하나 만들었음.
+
+내 Init() 이 초기화 해주는 함수에서 값들 초기화해주고 초기화한값들
+packet 변수 에 넣었음
+
+그리고 
+
+MonsterPosUpdate-> ThreadFunc1 ->ThreadFunc2 이 순으로 1초에 60번 돌게했음.
+
+
+MonsterPosupdate에서 몬스터위치 갱신한사바리 해주고
+packet 변수에 갱신한값들 넣어주고
+
+처음에 packetType 으로 무슨데이터인지 구분할수 있게끔 보냄
+
+for (int i = 0; i < 2; ++i)
+			{
+				retval = send(global_client_sock[i], (char*)&packetType, sizeof(int), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("send1()");
+				}
+			}
+
+			for (int i = 0; i < 2; ++i)
+			{
+				retval = send(global_client_sock[i], (char*)&packet, sizeof(DataPacket), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("send1()");
+				}
+			}
+걍 코드로 이해하셈
+
+
+그리고 ThreadFunc1 으로와서 이색기는 수정한부분 없음 샌드부분 빼버리고 리시브만함 이제
+ThreadFunc2도 동일
+
+클라에서 데이터타입 변수 보내면 그 타입에 맞게 연산함
+근데 지금은 플레이어밖에 없으니 플레이어 위치만 연산함 
+
+플레이어 위치받고 그거를 서버내 전역배열에 값 갱신해줌.
+
+그리고 다시 MonsterPosUpdate 함수로 가고 무한반복
