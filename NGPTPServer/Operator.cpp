@@ -19,6 +19,9 @@ COperator::COperator(
 	monsterIter = monsterVecForCalcul->begin();
 	//bulletIter = bulletVecForCalcul->begin();
 
+	//bool collisionPlayerWIthObstacle = false;;
+
+
 }
 void COperator::Update()      //recv받은거 어떻게 넘길지 고민해야할듯.
 {
@@ -42,6 +45,7 @@ void COperator::PlayerPosUpdate(PlayerInfo param, std::vector <PlayerInfo>* vect
 			std::cout << "p1 w키옴" << std::endl;
 			a.PlayerPos.z -= 1;
 			vectorParam->at(0).PlayerPos.z -= 1;
+			
 		}
 		if (a.charKey == 's')
 		{
@@ -68,7 +72,7 @@ void COperator::PlayerPosUpdate(PlayerInfo param, std::vector <PlayerInfo>* vect
 		{
 			std::cout << "p2 w키옴" << std::endl;
 			a.PlayerPos.z -= 1;
-			vectorParam->at(1).PlayerPos.z -= 1;
+			vectorParam->at(0).PlayerPos.z -= 1;
 		}
 		if (a.charKey == 's')
 		{

@@ -40,4 +40,6 @@ private:
 	std::vector<MonsterInfo>::iterator monsterIter;
 	std::vector<BulletInfo>::iterator bulletIter;
 
+	bool collisionPlayerWIthObstacle;
+
 }; 

@@ -29,7 +29,7 @@ CThreadManager::CThreadManager(SOCKET client_socket1, SOCKET client_socket2)
 	global_client_sock[0] = client_sock[0];
 	global_client_sock[1] = client_sock[1];
 	//Player1 Player2 순임
-	//InitializeCriticalSection(&csForPlayer);
+	InitializeCriticalSection(&csForPlayer);
 
 	//스레드 생성
 	hThreadHandle[0] = CreateThread(
@@ -42,11 +42,11 @@ CThreadManager::CThreadManager(SOCKET client_socket1, SOCKET client_socket2)
 		NULL, 0, CThreadManager::MonsterPosUpdate, NULL, CREATE_SUSPENDED, NULL);
 
 	//이벤트 생성
-	hEventMonsterUpdate = CreateEvent(NULL, TRUE, FALSE, 0);
+	hEventMonsterUpdate = CreateEvent(NULL, FALSE, FALSE, 0);
 	if (hEventMonsterUpdate == nullptr)
 		std::cout << "hEventMonsterUpdate 생성 에러" << std::endl;
 
-	hEventPlayerThread = CreateEvent(NULL, TRUE, TRUE, 0);
+	hEventPlayerThread = CreateEvent(NULL, FALSE, TRUE, 0);
 	if (hEventPlayerThread == nullptr)
 		std::cout << "hEventPlayer1Thread 생성 에러" << std::endl;
 
@@ -241,9 +241,6 @@ DWORD WINAPI CThreadManager::ThreadFunc(LPVOID param)
 			playerIndex = playerInfoForRS.playerIndex;
 			calculate.PlayerPosUpdate(playerInfoForRS, &playerVector);
 
-			if (playerInfoForRS.PlayerPos.z == playerVector.at(playerIndex-1).PlayerPos.z)
-				std::cout << "PlayerInfoForRS == playerVector" << std::endl;
-
 			//LeaveCriticalSection(&csForPlayer);
 			WaitForSingleObject(hEventMonsterUpdate, INFINITE);
 			for (int i = 0; i < 2; ++i)
@@ -320,8 +317,6 @@ void CThreadManager::Update()
 	ResumeThread(hMonPosUpdateHandle);
 	ResumeThread(hThreadHandle[0]);
 	ResumeThread(hThreadHandle[1]);
-
-	
 
 	std::cout << "쓰레드 3개 종료?" << std::endl;
 	WaitForMultipleObjects(2, hThreadHandle, TRUE, INFINITE);
