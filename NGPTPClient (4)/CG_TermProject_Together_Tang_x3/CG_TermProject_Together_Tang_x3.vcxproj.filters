@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\etc">
+      <UniqueIdentifier>{29d1c67f-d0bd-454b-a8fb-2c9eb47660b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\MainGame">
+      <UniqueIdentifier>{1bc67132-aaf4-4a45-b5ca-48e6ee725457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene">
+      <UniqueIdentifier>{fa5f0660-2938-4b00-a493-1eafe5f74b9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene\Lobby">
+      <UniqueIdentifier>{739da952-8e6c-4382-8376-8ba69a1925fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene\Logo">
+      <UniqueIdentifier>{26c1fa76-33bf-45f9-a960-9f62a5cc53c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager">
+      <UniqueIdentifier>{76f3707e-1e53-4c77-87bf-23f49c9582a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\SceneMgr">
+      <UniqueIdentifier>{0fcd7d92-473a-4cdd-860f-dac8f0756462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager\BitmapMgr">
+      <UniqueIdentifier>{9bd2ea1c-f1d6-41a3-aefd-f46cad174489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene\InGame">
+      <UniqueIdentifier>{6ae8f40b-1551-4a1b-bd3c-103345e1686b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject">
+      <UniqueIdentifier>{83d328a5-8fdf-4a27-b0f6-d735eeb960ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\Character">
+      <UniqueIdentifier>{5fc638d2-3003-451c-825d-56187cf95624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\GameWorld">
+      <UniqueIdentifier>{a831ec9d-c79d-4de9-b177-df72f5981add}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\GameWorld\Bunker">
+      <UniqueIdentifier>{a3a269f6-18dc-4315-8514-8ca8698b64ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\GameWorld\Building">
+      <UniqueIdentifier>{4ac47822-973d-4330-9f0b-ec78f7588b20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\Monster">
+      <UniqueIdentifier>{bc01237f-56a2-41bf-b919-dd8905c0dfc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\Bullet">
+      <UniqueIdentifier>{f9df2f09-f991-4e16-bd1f-b2eae5edf92b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\GameWorld\Weather">
+      <UniqueIdentifier>{0bc4ae90-8ff1-489e-95d5-89563fd7ae98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\Item">
+      <UniqueIdentifier>{f2d9d2a5-6a37-48d6-914f-25f5f3949319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scene\InResult">
+      <UniqueIdentifier>{8341b62f-f067-4efe-9e94-e4907ec98fe7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGame.h">
+      <Filter>소스 파일\MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Logo.h">
+      <Filter>소스 파일\Scene\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="Lobby.h">
+      <Filter>소스 파일\Scene\Lobby</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMgr.h">
+      <Filter>소스 파일\Manager\SceneMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapMgr.h">
+      <Filter>소스 파일\Manager\BitmapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="InGame.h">
+      <Filter>소스 파일\Scene\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>소스 파일\GameObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="Bunker.h">
+      <Filter>소스 파일\GameObject\GameWorld\Bunker</Filter>
+    </ClInclude>
+    <ClInclude Include="Building.h">
+      <Filter>소스 파일\GameObject\GameWorld\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\GameObject\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>소스 파일\GameObject\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Weather.h">
+      <Filter>소스 파일\GameObject\GameWorld\Weather</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>소스 파일\GameObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="InResult.h">
+      <Filter>소스 파일\Scene\InResult</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CG_TermProject_Together_Tang_x3.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>헤더 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>소스 파일\MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Logo.cpp">
+      <Filter>소스 파일\Scene\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>소스 파일\Scene\Lobby</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneMgr.cpp">
+      <Filter>소스 파일\Manager\SceneMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapMgr.cpp">
+      <Filter>소스 파일\Manager\BitmapMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="InGame.cpp">
+      <Filter>소스 파일\Scene\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>소스 파일\GameObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Bunker.cpp">
+      <Filter>소스 파일\GameObject\GameWorld\Bunker</Filter>
+    </ClCompile>
+    <ClCompile Include="Building.cpp">
+      <Filter>소스 파일\GameObject\GameWorld\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\GameObject\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>소스 파일\GameObject\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Weather.cpp">
+      <Filter>소스 파일\GameObject\GameWorld\Weather</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일\GameObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="InResult.cpp">
+      <Filter>소스 파일\Scene\InResult</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+</Project>
