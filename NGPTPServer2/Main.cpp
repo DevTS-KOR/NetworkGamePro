@@ -20,7 +20,8 @@ HANDLE hEventMonsterUpdate;				//이벤트 핸들
 HANDLE hEventPlayerThread1;				//이벤트 핸들.
 HANDLE hEventPlayerThread2;
 
-DataPacket packet;
+//DataPacket packet;
+SendPacket packet;
 
 double leftTime = (100 / 6);
 
@@ -36,7 +37,7 @@ bool CollisionBulletWithMonster(BulletInfo&, MonsterInfo&);								// 총알하고 �
 bool CollisionBulletWithMap(BulletInfo&);												// 맵전체하고 총알
 bool CollisionBulletWithObstacle(BulletInfo&bullet, ContainerInfo& container);			// 총알하고 장애물 충돌함수
 bool CollisionObstacleWithPlayer(PlayerInfo&, ContainerInfo&);							// 장애물과 플레이어 충돌함수
-
+bool CollisionMapWithPlayer(PlayerInfo&player);
 int main(int argc, char* argv[])
 {
 	WSADATA wsaData;
@@ -73,7 +74,8 @@ int main(int argc, char* argv[])
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR)
 		err_quit("Listen()");    
-
+	int option = true;
+	
 	while (true)
 	{
 		//Accept
@@ -90,6 +92,9 @@ int main(int argc, char* argv[])
 			break;
 		}
 	}
+
+	setsockopt(global_client_sock[0], IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
+	setsockopt(global_client_sock[1], IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 
 	//쓰레드 생성.
 	hThreadHandle1 = CreateThread(
@@ -225,11 +230,14 @@ void Init()
 	//Send,Recv전용 패킷 초기화
 	for (int i = 0; i < 10; ++i)
 	{
-		packet.monsters[i] = monsterVector[i];
+		packet.MonstersPosition[i].x = monsterVector[i].MonsterPos.x;
+		packet.MonstersPosition[i].z = monsterVector[i].MonsterPos.z;
 	}
-	packet.player1 = playerVector[0];
-	packet.player2 = playerVector[1];
-	
+	packet.player1Pos.x = playerVector[0].PlayerPos.x;
+	packet.player1Pos.z = playerVector[0].PlayerPos.z;
+
+	packet.player2Pos.x = playerVector[1].PlayerPos.x;
+	packet.player2Pos.z = playerVector[1].PlayerPos.z;
 
 }
 void MonsterUpdate()
@@ -277,7 +285,8 @@ void MonsterUpdate()
 			for (int i = 0; i < 10; ++i)
 			{
 				monsterVector[i].MonsterPos.x += (5 * monsterDirection[i]);
-				packet.monsters[i] = monsterVector[i];
+				packet.MonstersPosition[i].x = monsterVector[i].MonsterPos.x;
+				packet.MonstersPosition[i].z = monsterVector[i].MonsterPos.z;
 			}
 
 			//총알 위치 업데이트.
@@ -288,15 +297,6 @@ void MonsterUpdate()
 			//	}
 			//}
 
-			//데이터를 묶어서 보낸다.
-			for (int i = 0; i < 2; ++i)
-			{
-				retval = send(global_client_sock[i], (char*)&packetType, sizeof(int), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send1()");
-				}
-			}
 
 			for (int i = 0; i < 2; ++i)
 			{
@@ -306,28 +306,6 @@ void MonsterUpdate()
 					err_display("send1()");
 				}
 			}
-
-			//총알 샌드
-		/*	if (bulletVector.size()!=0)
-			{
-				for (int i = 0; i < 2; ++i)
-				{
-					retval = send(global_client_sock[i], (char*)&bulletType, sizeof(int), 0);
-					if (retval == SOCKET_ERROR)
-					{
-						err_display("send1 in Bulet()");
-					}
-				}
-
-				for (int i = 0; i < bulletVector.size(); ++i)
-				{
-					retval = send(global_client_sock[i], (char*)&bulletVector[i], sizeof(MonsterPosForSend), 0);
-					if (retval == SOCKET_ERROR)
-					{
-						err_display("send1 in bullet()");
-					}
-				}
-			}*/
 
 			nextTime = clock() + leftTime;
 
@@ -356,15 +334,9 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 		nowTime = std::clock();
 		if (nowTime > nextTime)
 		{
-			printf("THread Func1 recv waiting.. \n");
-
 			retval = recv(client_sock, (char*)&dataType, sizeof(int), 0);
 			if (retval == SOCKET_ERROR)
 				err_display("recv");
-
-			printf("THread Func1 recv Complete.. \n");
-			printf("Thread FUnc1 Come Data : %d \n", dataType);
-
 		/*
 			if (DataType::BULLET)
 			{
@@ -380,7 +352,6 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 
 			if (DataType::PLAYER == dataType)
 			{
-				printf("ThreadFunc1 PlayerType Call \n");
 				retval = recv(client_sock, (char*)&playerInfoForRS, sizeof(PlayerInfo), 0);
 				if (retval == SOCKET_ERROR)
 				{
@@ -389,15 +360,20 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 				playerIndex = playerInfoForRS.playerIndex;
 
 				playerVector[playerIndex - 1].PlayerPos = playerInfoForRS.PlayerPos;
-				//요사이에 충돌체크 넣을거임
-				packet.player1 = playerInfoForRS;
+				// 맵 충돌
+				CollisionMapWithPlayer(playerInfoForRS);
+
+				//데이터패킷에 값 초기화
+				//packet.player1 = playerInfoForRS;
+				packet.player1Pos.x = playerInfoForRS.PlayerPos.x;
+				packet.player1Pos.z = playerInfoForRS.PlayerPos.z;
+				packet.player1Cam = playerInfoForRS.CameraDir.y;
 
 				printf("playerINfoFOrRS IN threadFUnc1 x : %f y :  %f  z :%f  \n",
 					playerInfoForRS.PlayerPos.x,
 					playerInfoForRS.PlayerPos.y,
 					playerInfoForRS.PlayerPos.z);
 			}
-			printf("ThreadFunc1 Call Set event \n");
 			nextTime = clock() + leftTime;
 		}
 		SetEvent(hEventPlayerThread1);
@@ -423,17 +399,12 @@ DWORD WINAPI ThreadFunc2(LPVOID param)
 		nowTime = std::clock();
 		if (nowTime > nextTime)
 		{
-			printf("THread Func2 recv waiting.. \n");
 			retval = recv(client_sock, (char*)&dataType, sizeof(int), 0);
 			if (retval == SOCKET_ERROR)
 				err_display("recv");
 
-			printf("THread Func2 recv Complete.. \n");
-			printf("Thread FUnc2 Come Data : %d \n", dataType);
-
 			if (DataType::PLAYER == dataType)
 			{
-				printf("ThreadFunc2 PlayerType Call \n");
 				retval = recv(client_sock, (char*)&playerInfoForRS, sizeof(PlayerInfo), 0);
 				if (retval == SOCKET_ERROR)
 				{
@@ -443,73 +414,25 @@ DWORD WINAPI ThreadFunc2(LPVOID param)
 				playerIndex = playerInfoForRS.playerIndex;
 
 				playerVector[playerIndex - 1].PlayerPos = playerInfoForRS.PlayerPos;
-
-				packet.player2 = playerInfoForRS;
+				// 맵 충돌
+				CollisionMapWithPlayer(playerInfoForRS);
+				
+				//데이터패킷의 값 초기화.
+				//packet.player2 = playerInfoForRS;
+				packet.player2Pos.x = playerInfoForRS.PlayerPos.x;
+				packet.player2Pos.z = playerInfoForRS.PlayerPos.z;
+				packet.player2Cam = playerInfoForRS.CameraDir.y;
 
 				printf("playerINfoFOrRS In THreadFUnc2 x : %f y :  %f  z :%f  \n",
 					playerInfoForRS.PlayerPos.x,
 					playerInfoForRS.PlayerPos.y,
 					playerInfoForRS.PlayerPos.z);
 			}
-			printf("ThreadFunc2 Call Set event \n"); 
 			nextTime = clock() + leftTime;
 		}
 		SetEvent(hEventPlayerThread2);
 	}
 	return 0;
-}
-void PlayerPosUpdate(PlayerInfo* param)
-{
-	PlayerInfo a = *param;
-	std::cout << "PlayerPosUpdate호출" << std::endl;
-	std::cout <<"a.playerINDex :: \n"<< a.playerIndex << std::endl;
-
-	if (a.playerIndex == 1)  
-	{
-		if (a.charKey == 'w')
-		{
-			std::cout << "p1 w키옴" << std::endl;
-			playerVector[0].PlayerPos.z -= 10;
-		}
-		if (a.charKey == 's')
-		{
-			std::cout << "p1 s키옴" << std::endl;
-			playerVector[0].PlayerPos.z += 10;
-		}
-		if (a.charKey == 'a')
-		{
-			std::cout << "p1 a키옴" << std::endl;
-			playerVector[0].PlayerPos.x -= 10;
-		}
-		if (a.charKey == 'd')
-		{
-			std::cout << "p1 d키옴" << std::endl;
-			playerVector[0].PlayerPos.x += 10;
-		}
-	}
-	else if (a.playerIndex == 2)
-	{
-		if (a.charKey == 'w')
-		{
-			std::cout << "p2 w키옴" << std::endl;
-			playerVector[1].PlayerPos.z -= 10;
-		}
-		if (a.charKey == 's')
-		{
-			std::cout << "p2 s키옴" << std::endl;
-			playerVector[1].PlayerPos.z += 10;
-		}
-		if (a.charKey == 'a')
-		{
-			std::cout << "p2 a키옴" << std::endl;
-			playerVector[1].PlayerPos.x -= 10;
-		}
-		if (a.charKey == 'd')
-		{
-			std::cout << "p2 d키옴" << std::endl;
-			playerVector[1].PlayerPos.x += 10;
-		}
-	}
 }
 bool CollisionBulletWithMonster(BulletInfo & bullet, MonsterInfo& monster)
 {
@@ -548,12 +471,37 @@ bool CollisionBulletWithMap(BulletInfo& bullet)
 }
 bool CollisionObstacleWithPlayer(PlayerInfo&player, ContainerInfo& container)
 {
-	return(
-		player.PlayerPos.x + 30 > container.position.x - 128 &&
+	if (player.PlayerPos.x + 30 > container.position.x - 128 &&
 		player.PlayerPos.x - 30 < container.position.x + 128 &&
-		player.PlayerPos.z +  15> container.position.z - 256 &&
-		player.PlayerPos.z - 15 < container.position.z + 256
-		);
+		player.PlayerPos.z + 15 > container.position.z - 256 &&
+		player.PlayerPos.z - 15 < container.position.z + 256)
+	{
+		return true;;
+	}
 
 	//트루면 이전값으로 돌려놓기.
+}
+bool CollisionMapWithPlayer(PlayerInfo&player)
+{
+	if (player.PlayerPos.x + 30 > 2000)
+	{
+		player.PlayerPos.x -= 30;
+		return true;
+	}
+	if (player.PlayerPos.x - 30 < -2000)
+	{
+		player.PlayerPos.x += 30;
+		return true;
+	}
+	if (player.PlayerPos.z+30>2000)
+	{
+		player.PlayerPos.z -= 30;
+		return true;
+	}
+	if (player.PlayerPos.z - 30>2000)
+	{
+		player.PlayerPos.z += 30;
+		return true;
+	}
+	return false;
 }

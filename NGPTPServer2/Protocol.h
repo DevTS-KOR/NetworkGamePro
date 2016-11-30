@@ -6,7 +6,11 @@ struct Vec3							//X, Y, Z.
 	float	y;
 	float 	z;
 };
-
+struct Vec2
+{
+	float x;
+	float z;
+};
 struct InitInfo						//게임의 초기값을 담당하는 구조체
 {
 	int playerIndex;
@@ -41,7 +45,7 @@ struct SceneInfo					//씬의 구분을 담당하는 구조체
 };
 
 struct PlayerInfo					//플레이어의 정보를 담당하는 구조체
-{
+{									// 34byte
 	int type;						//데이터 타입의 구분을 담당
 	int playerIndex;
 	Vec3 PlayerPos;					//플레이어의 위치를 담당
@@ -87,10 +91,30 @@ struct MapSizeInfo
 //-----------------11/28 추가--------------
 struct DataPacket
 {
-	PlayerInfo player1;
-	PlayerInfo player2;
-	MonsterInfo monsters[10];
+	PlayerInfo player1;			// 34
+	PlayerInfo player2;			// 34
+	MonsterInfo monsters[10];	// 240
 
+};
+
+struct SendPacket
+{
+	int		playerIndex;					//4
+	Vec2	player1Pos;						//8
+	float	player1Cam;						//4
+	Vec2	player2Pos;						//8
+	float	player2Cam;						//4
+	Vec2	MonstersPosition[10];			//80
+	Vec3	player1Bullets[5];				//60			
+	Vec3	player2Bullets[5];				//60
+
+};
+struct RecvPacket
+{
+	int dataType;
+	PlayerInfo playerInfo;
+	bool bulletMake;
+	BulletInfo bulletInfo;
 };
 
 

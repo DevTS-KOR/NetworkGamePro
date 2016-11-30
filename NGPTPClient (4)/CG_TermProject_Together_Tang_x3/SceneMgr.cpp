@@ -332,7 +332,7 @@ GLvoid CSceneMgr::ConnectServer()
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
-	int option = FALSE;
+	int option = TRUE;
 	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
