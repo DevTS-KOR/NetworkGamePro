@@ -97,24 +97,31 @@ struct DataPacket
 
 };
 
-struct SendPacket
+struct playerSend
 {
 	int		playerIndex;					//4
-	Vec2	player1Pos;						//8
-	float	player1Cam;						//4
-	Vec2	player2Pos;						//8
-	float	player2Cam;						//4
+	Vec2	playerPos;						//8
+	float	playerCam;						//4
+											//16
+};
+
+struct SendPacket
+{
+	playerSend player1;						//16
+	playerSend player2;						//16
 	Vec2	MonstersPosition[10];			//80
 	Vec3	player1Bullets[5];				//60			
 	Vec3	player2Bullets[5];				//60
-
+											//232
 };
 struct RecvPacket
 {
-	int dataType;
-	PlayerInfo playerInfo;
-	bool bulletMake;
-	BulletInfo bulletInfo;
+	Vec2 playerPos;			//8
+	float playerCam;			//4
+	bool makeBullet;			//1			//이색기가 TRUe면 총알 쏜걸로 간주하고 서버내 총알관리 벡터에 추가해줌.
+	Vec3 bulletDirection;		//12
+	Vec3 bulletPosition;		//12
+								//37
 };
 
 

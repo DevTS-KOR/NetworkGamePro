@@ -23,7 +23,7 @@ HANDLE hEventPlayerThread2;
 //DataPacket packet;
 SendPacket packet;
 
-double leftTime = (100 / 6);
+double leftTime = (100 / 3);
 
 static int NUM= 0;
 
@@ -233,11 +233,13 @@ void Init()
 		packet.MonstersPosition[i].x = monsterVector[i].MonsterPos.x;
 		packet.MonstersPosition[i].z = monsterVector[i].MonsterPos.z;
 	}
-	packet.player1Pos.x = playerVector[0].PlayerPos.x;
-	packet.player1Pos.z = playerVector[0].PlayerPos.z;
+	packet.player1.playerIndex = 1;
+	packet.player1.playerPos.x = playerVector[0].PlayerPos.x;
+	packet.player1.playerPos.z = playerVector[0].PlayerPos.z;
 
-	packet.player2Pos.x = playerVector[1].PlayerPos.x;
-	packet.player2Pos.z = playerVector[1].PlayerPos.z;
+	packet.player2.playerIndex = 2;
+	packet.player2.playerPos.x = playerVector[1].PlayerPos.x;
+	packet.player2.playerPos.z = playerVector[1].PlayerPos.z;
 
 }
 void MonsterUpdate()
@@ -249,7 +251,6 @@ void MonsterUpdate()
 	float moveRange = 300;
 	int retval = 0;
 
-	char buf1[10];
 	char buf2[BUFSIZE];
 
 	//몬스터들의 방향 랜덤하게 초기화.
@@ -297,10 +298,9 @@ void MonsterUpdate()
 			//	}
 			//}
 
-
 			for (int i = 0; i < 2; ++i)
 			{
-				retval = send(global_client_sock[i], (char*)&packet, sizeof(DataPacket), 0);
+				retval = send(global_client_sock[i], (char*)&packet, sizeof(SendPacket), 0);
 				if (retval == SOCKET_ERROR)
 				{
 					err_display("send1()");
@@ -321,8 +321,9 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 	int retval;         //return value
 	char buf[BUFSIZE];
 	int dataType = 0;
-	PlayerInfo playerInfoForRS;		//샌드리시브 전용 구조체
-	BulletInfo bulletInfoForRS;		//총알 샌드리시브 전용 구조체;
+
+	RecvPacket recvPacket;
+
 	int playerIndex;
 
 	double nextTime = 0.0f;
@@ -334,46 +335,21 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 		nowTime = std::clock();
 		if (nowTime > nextTime)
 		{
-			retval = recv(client_sock, (char*)&dataType, sizeof(int), 0);
+			retval = recv(client_sock, (char*)&recvPacket, sizeof(RecvPacket), 0);
 			if (retval == SOCKET_ERROR)
+			{
 				err_display("recv");
-		/*
-			if (DataType::BULLET)
-			{
-				retval = recv(client_sock, (char*)&bulletInfoForRS, sizeof(BulletInfo), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("recv");
-				}
-
-				bulletVector.push_back(bulletInfoForRS);
-
-			}*/
-
-			if (DataType::PLAYER == dataType)
-			{
-				retval = recv(client_sock, (char*)&playerInfoForRS, sizeof(PlayerInfo), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("recv");
-				}
-				playerIndex = playerInfoForRS.playerIndex;
-
-				playerVector[playerIndex - 1].PlayerPos = playerInfoForRS.PlayerPos;
-				// 맵 충돌
-				CollisionMapWithPlayer(playerInfoForRS);
-
-				//데이터패킷에 값 초기화
-				//packet.player1 = playerInfoForRS;
-				packet.player1Pos.x = playerInfoForRS.PlayerPos.x;
-				packet.player1Pos.z = playerInfoForRS.PlayerPos.z;
-				packet.player1Cam = playerInfoForRS.CameraDir.y;
-
-				printf("playerINfoFOrRS IN threadFUnc1 x : %f y :  %f  z :%f  \n",
-					playerInfoForRS.PlayerPos.x,
-					playerInfoForRS.PlayerPos.y,
-					playerInfoForRS.PlayerPos.z);
 			}
+
+			playerVector[0].PlayerPos.x = recvPacket.playerPos.x;
+			playerVector[0].PlayerPos.z = recvPacket.playerPos.z;
+			// 맵 충돌
+			//CollisionMapWithPlayer(playerInfoForRS);
+
+			//데이터패킷에 값 초기화
+			packet.player1.playerPos = recvPacket.playerPos;
+			packet.player1.playerCam = recvPacket.playerCam;
+			
 			nextTime = clock() + leftTime;
 		}
 		SetEvent(hEventPlayerThread1);
@@ -387,11 +363,10 @@ DWORD WINAPI ThreadFunc2(LPVOID param)
 	int retval;         //return value
 	char buf[BUFSIZE];
 	int dataType = 0;
-	PlayerInfo playerInfoForRS;		//샌드리시브 전용 구조체
-	int playerIndex;
 
 	double nextTime = 0.0f;
 	double nowTime = clock();
+	RecvPacket recvPacket;
 
 	while (true)            //이 함수내에서 send,recv 작업이 이루어짐.
 	{
@@ -399,35 +374,23 @@ DWORD WINAPI ThreadFunc2(LPVOID param)
 		nowTime = std::clock();
 		if (nowTime > nextTime)
 		{
-			retval = recv(client_sock, (char*)&dataType, sizeof(int), 0);
+			retval = recv(client_sock, (char*)&recvPacket, sizeof(RecvPacket), 0);
 			if (retval == SOCKET_ERROR)
-				err_display("recv");
-
-			if (DataType::PLAYER == dataType)
 			{
-				retval = recv(client_sock, (char*)&playerInfoForRS, sizeof(PlayerInfo), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("recv");
-				}
-
-				playerIndex = playerInfoForRS.playerIndex;
-
-				playerVector[playerIndex - 1].PlayerPos = playerInfoForRS.PlayerPos;
-				// 맵 충돌
-				CollisionMapWithPlayer(playerInfoForRS);
-				
-				//데이터패킷의 값 초기화.
-				//packet.player2 = playerInfoForRS;
-				packet.player2Pos.x = playerInfoForRS.PlayerPos.x;
-				packet.player2Pos.z = playerInfoForRS.PlayerPos.z;
-				packet.player2Cam = playerInfoForRS.CameraDir.y;
-
-				printf("playerINfoFOrRS In THreadFUnc2 x : %f y :  %f  z :%f  \n",
-					playerInfoForRS.PlayerPos.x,
-					playerInfoForRS.PlayerPos.y,
-					playerInfoForRS.PlayerPos.z);
+				err_display("recv");
 			}
+
+			playerVector[1].PlayerPos.x = recvPacket.playerPos.x;
+			playerVector[1].PlayerPos.z = recvPacket.playerPos.z;
+			// 맵 충돌
+			//CollisionMapWithPlayer(playerInfoForRS);
+			
+			//데이터패킷의 값 초기화.
+			//packet.player2 = playerInfoForRS;
+			
+			packet.player2.playerPos = recvPacket.playerPos;
+			packet.player2.playerCam = recvPacket.playerCam; 
+
 			nextTime = clock() + leftTime;
 		}
 		SetEvent(hEventPlayerThread2);
