@@ -14,18 +14,13 @@ vector<PlayerInfo> playerVector;
 vector<MonsterInfo> monsterVector;
 vector<BulletInfo> bulletVector;
 vector<ContainerInfo> conVector;
-SceneInfo changeGameScene;				//8byte 전송.  
+SceneInfo changeGameScene;						//8byte 전송.  
 InitInfo initInform;
-HANDLE hEventMonsterUpdate;				//이벤트 핸들
-HANDLE hEventPlayerThread1;				//이벤트 핸들.
+HANDLE hEventMonsterUpdate;						//이벤트 핸들
+HANDLE hEventPlayerThread1;						//이벤트 핸들.
 HANDLE hEventPlayerThread2;
-
-//DataPacket packet;
-SendPacket packet;
-
-double leftTime = (100 / 3);
-
-static int NUM= 0;
+SendPacket packet;								//Send packet
+double leftTime = (100 / 3);					//FrameTime 조절 변수
 
 //-----------함수 선언----------//
 DWORD WINAPI ThreadFunc1(LPVOID);	
@@ -37,7 +32,7 @@ bool CollisionBulletWithMonster(BulletInfo&, MonsterInfo&);								// 총알하고 �
 bool CollisionBulletWithMap(BulletInfo&);												// 맵전체하고 총알
 bool CollisionBulletWithObstacle(BulletInfo&bullet, ContainerInfo& container);			// 총알하고 장애물 충돌함수
 bool CollisionObstacleWithPlayer(PlayerInfo&, ContainerInfo&);							// 장애물과 플레이어 충돌함수
-bool CollisionMapWithPlayer(PlayerInfo&player);
+bool CollisionMapWithPlayer(Vec2 &);
 int main(int argc, char* argv[])
 {
 	WSADATA wsaData;
@@ -181,6 +176,8 @@ int main(int argc, char* argv[])
 }
 void Init()
 {
+	cout << "BUlletVectorSIze" << bulletVector.size() << endl;
+
 	playerVector.reserve(2);
 	playerVector.push_back(PlayerInfo{ DataType::PLAYER,1,Vec3{ -1500,50,1900 },Vec3{ 0,0,0 },false });
 	playerVector.push_back(PlayerInfo{ DataType::PLAYER,2,Vec3{ 1500,50,1900 },Vec3{ 0,0,0 },false });
@@ -244,14 +241,10 @@ void Init()
 }
 void MonsterUpdate()
 {
-	std::cout << "monsterPosUpdate in Main Function" << std::endl;
-
 	float firstPosition[10];
 	float monsterDirection[10];
 	float moveRange = 300;
 	int retval = 0;
-
-	char buf2[BUFSIZE];
 
 	//몬스터들의 방향 랜덤하게 초기화.
 	for (int i = 0; i < 10; ++i)
@@ -341,10 +334,13 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 				err_display("recv");
 			}
 
+			// 맵 충돌
+			printf("Before : X : %f , z : %f \n", recvPacket.playerPos.x, recvPacket.playerPos.z);
+			CollisionMapWithPlayer(recvPacket.playerPos);
+			printf("After  : X : %f , z : %f \n", recvPacket.playerPos.x, recvPacket.playerPos.z);
+			//서버의 플레이어 벡터의 값 초기화
 			playerVector[0].PlayerPos.x = recvPacket.playerPos.x;
 			playerVector[0].PlayerPos.z = recvPacket.playerPos.z;
-			// 맵 충돌
-			//CollisionMapWithPlayer(playerInfoForRS);
 
 			//데이터패킷에 값 초기화
 			packet.player1.playerPos = recvPacket.playerPos;
@@ -374,20 +370,21 @@ DWORD WINAPI ThreadFunc2(LPVOID param)
 		nowTime = std::clock();
 		if (nowTime > nextTime)
 		{
+			//Player2 로부터 데이터 받아옴.
 			retval = recv(client_sock, (char*)&recvPacket, sizeof(RecvPacket), 0);
 			if (retval == SOCKET_ERROR)
 			{
 				err_display("recv");
 			}
 
+			// 맵 충돌
+			CollisionMapWithPlayer(recvPacket.playerPos);
+			
+			// 서버의 플레이어벡터의 값 초기화
 			playerVector[1].PlayerPos.x = recvPacket.playerPos.x;
 			playerVector[1].PlayerPos.z = recvPacket.playerPos.z;
-			// 맵 충돌
-			//CollisionMapWithPlayer(playerInfoForRS);
-			
-			//데이터패킷의 값 초기화.
-			//packet.player2 = playerInfoForRS;
-			
+
+			//샌드 데이터패킷의 값 초기화.
 			packet.player2.playerPos = recvPacket.playerPos;
 			packet.player2.playerCam = recvPacket.playerCam; 
 
@@ -444,26 +441,26 @@ bool CollisionObstacleWithPlayer(PlayerInfo&player, ContainerInfo& container)
 
 	//트루면 이전값으로 돌려놓기.
 }
-bool CollisionMapWithPlayer(PlayerInfo&player)
+bool CollisionMapWithPlayer(Vec2 & playerPos)
 {
-	if (player.PlayerPos.x + 30 > 2000)
+	if (playerPos.x + 30 > 2000)
 	{
-		player.PlayerPos.x -= 30;
+		playerPos.x -= 30;
 		return true;
 	}
-	if (player.PlayerPos.x - 30 < -2000)
+	if (playerPos.x - 30 < -2000)
 	{
-		player.PlayerPos.x += 30;
+		playerPos.x += 30;
 		return true;
 	}
-	if (player.PlayerPos.z+30>2000)
+	if (playerPos.z + 30>2000)
 	{
-		player.PlayerPos.z -= 30;
+		playerPos.z -= 30;
 		return true;
 	}
-	if (player.PlayerPos.z - 30>2000)
+	if (playerPos.z + 30<2000)
 	{
-		player.PlayerPos.z += 30;
+		playerPos.z += 30;
 		return true;
 	}
 	return false;
