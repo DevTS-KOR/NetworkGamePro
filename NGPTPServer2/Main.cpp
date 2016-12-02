@@ -9,45 +9,47 @@ using namespace std;
 #define SERVERPORT 9595
 #define BUFSIZE 512
 //-----------전역변수들----------//
-SOCKET global_client_sock[2];					// 클라이언트 소켓 변수
+SOCKET global_client_sock[2];               // 클라이언트 소켓 변수
 vector<PlayerInfo> playerVector;
 vector<MonsterInfo> monsterVector;
 vector<BulletInfo> bulletVector;
 vector<ContainerInfo> conVector;
-SceneInfo changeGameScene;						//8byte 전송.  
+SceneInfo changeGameScene;                  //8byte 전송.  
 InitInfo initInform;
-HANDLE hEventMonsterUpdate;						//이벤트 핸들
-HANDLE hEventPlayerThread1;						//이벤트 핸들.
+HANDLE hEventMonsterUpdate;                  //이벤트 핸들
+HANDLE hEventPlayerThread1;                  //이벤트 핸들.
 HANDLE hEventPlayerThread2;
-SendPacket packet;								//Send packet
-double leftTime = (100 / 3);					//FrameTime 조절 변수
-
+SendPacket sendPacket;                        //Send packet
+double leftTime = (100 / 6);               //FrameTime 조절 변수
+int player1KillCount = 0;
+int player2KillCount = 0;
 //-----------함수 선언----------//
-DWORD WINAPI ThreadFunc1(LPVOID);	
+DWORD WINAPI ThreadFunc1(LPVOID);
 DWORD WINAPI ThreadFunc2(LPVOID);
 void PlayerPosUpdate(PlayerInfo*);
 void Init();
 void MonsterUpdate();
-bool CollisionBulletWithMonster(BulletInfo&, MonsterInfo&);								// 총알하고 몬스터 충돌함수
-bool CollisionBulletWithMap(BulletInfo&);												// 맵전체하고 총알
-bool CollisionBulletWithObstacle(BulletInfo&bullet, ContainerInfo& container);			// 총알하고 장애물 충돌함수
-bool CollisionObstacleWithPlayer(PlayerInfo&, ContainerInfo&);							// 장애물과 플레이어 충돌함수
+bool CollisionBulletWithMonster(Vec3&, Vec3&);                        // 총알하고 몬스터 충돌함수
+bool CollisionBulletWithMap(Vec3&);                                    // 맵전체하고 총알
+bool CollisionBulletWithObstacle(Vec3&bullet, Vec3& container);         // 총알하고 장애물 충돌함수
+bool CollisionObstacleWithPlayer(PlayerInfo&, ContainerInfo&);                     // 장애물과 플레이어 충돌함수
 bool CollisionMapWithPlayer(Vec2 &);
+bool CollisionContainerWithPlayer(Vec2 &);
 int main(int argc, char* argv[])
 {
 	WSADATA wsaData;
-	SOCKADDR_IN server_addr;	// 서버 소켓 주소 구조체
-	SOCKADDR_IN client_addr;	// 클라 소켓 주소 구조체
-	SOCKET listen_sock;			// Listen Socket 변수
-	int retval;					// return Value 값 받는 변수
-	int ClientNum = 0;			// 클라 몇개 접속했는지
-	int addrlen;				// 주소 길이
+	SOCKADDR_IN server_addr;   // 서버 소켓 주소 구조체
+	SOCKADDR_IN client_addr;   // 클라 소켓 주소 구조체
+	SOCKET listen_sock;         // Listen Socket 변수
+	int retval;               // return Value 값 받는 변수
+	int ClientNum = 0;         // 클라 몇개 접속했는지
+	int addrlen;            // 주소 길이
 	int playerIndex;
 	HANDLE hThreadHandle1;
 	HANDLE hThreadHandle2;
-	
-	char buf[BUFSIZE];	
-	
+
+	char buf[BUFSIZE];
+
 	//윈속 초기화 작업
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
@@ -68,9 +70,9 @@ int main(int argc, char* argv[])
 	//Listen()
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR)
-		err_quit("Listen()");    
+		err_quit("Listen()");
 	int option = true;
-	
+
 	while (true)
 	{
 		//Accept
@@ -78,7 +80,7 @@ int main(int argc, char* argv[])
 		global_client_sock[ClientNum] = accept(listen_sock, (SOCKADDR*)&client_addr, &addrlen);
 		if (global_client_sock[ClientNum] == INVALID_SOCKET)
 			err_quit("client_socket");
-		printf("%d 번째 클라정보 : IP : %s, 포트번호 : %d \n",ClientNum+1, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+		printf("%d 번째 클라정보 : IP : %s, 포트번호 : %d \n", ClientNum + 1, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 		if (ClientNum < 2)
 			ClientNum++;
 		if (ClientNum == 2)
@@ -109,7 +111,7 @@ int main(int argc, char* argv[])
 	if (hEventPlayerThread2 == nullptr)
 		cout << "hEventPlayer1Thread 생성 에러" << endl;
 
-	Init();			//데이터들 초기화
+	Init();         //데이터들 초기화
 
 	cout << "초기값 전송" << std::endl;
 	for (int i = 0; i<2; ++i)
@@ -135,7 +137,7 @@ int main(int argc, char* argv[])
 	std::cout << "준비완료 메세지 수신 완료" << std::endl;
 
 	std::cout << "씬전환 메세지 송신" << std::endl;
- 
+
 	changeGameScene.type = DataType::SCENE;
 	changeGameScene.SceneState = SceneList::INGAME;
 
@@ -227,16 +229,17 @@ void Init()
 	//Send,Recv전용 패킷 초기화
 	for (int i = 0; i < 10; ++i)
 	{
-		packet.MonstersPosition[i].x = monsterVector[i].MonsterPos.x;
-		packet.MonstersPosition[i].z = monsterVector[i].MonsterPos.z;
+		sendPacket.MonstersPosition[i].x = monsterVector[i].MonsterPos.x;
+		sendPacket.MonstersPosition[i].y = monsterVector[i].MonsterPos.y;
+		sendPacket.MonstersPosition[i].z = monsterVector[i].MonsterPos.z;
 	}
-	packet.player1.playerIndex = 1;
-	packet.player1.playerPos.x = playerVector[0].PlayerPos.x;
-	packet.player1.playerPos.z = playerVector[0].PlayerPos.z;
+	sendPacket.player1.playerIndex = 1;
+	sendPacket.player1.playerPos.x = playerVector[0].PlayerPos.x;
+	sendPacket.player1.playerPos.z = playerVector[0].PlayerPos.z;
 
-	packet.player2.playerIndex = 2;
-	packet.player2.playerPos.x = playerVector[1].PlayerPos.x;
-	packet.player2.playerPos.z = playerVector[1].PlayerPos.z;
+	sendPacket.player2.playerIndex = 2;
+	sendPacket.player2.playerPos.x = playerVector[1].PlayerPos.x;
+	sendPacket.player2.playerPos.z = playerVector[1].PlayerPos.z;
 
 }
 void MonsterUpdate()
@@ -261,6 +264,9 @@ void MonsterUpdate()
 	double nextTime = 0.0f;
 	double nowTime = clock();
 
+	vector<BulletInfo>::iterator bulletIter;
+	vector<MonsterInfo>::iterator monsterIter = monsterVector.begin();
+	vector<ContainerInfo>::iterator conIter = conVector.begin();
 
 	while (true)
 	{
@@ -268,6 +274,8 @@ void MonsterUpdate()
 		nowTime = std::clock();
 		if (nowTime > nextTime)
 		{
+			
+
 			//몬스터 위치 업데이트
 			for (int i = 0; i < 10; ++i)
 			{
@@ -279,21 +287,109 @@ void MonsterUpdate()
 			for (int i = 0; i < 10; ++i)
 			{
 				monsterVector[i].MonsterPos.x += (5 * monsterDirection[i]);
-				packet.MonstersPosition[i].x = monsterVector[i].MonsterPos.x;
-				packet.MonstersPosition[i].z = monsterVector[i].MonsterPos.z;
+				sendPacket.MonstersPosition[i].x = monsterVector[i].MonsterPos.x;
+				sendPacket.MonstersPosition[i].y = monsterVector[i].MonsterPos.y;
+				sendPacket.MonstersPosition[i].z = monsterVector[i].MonsterPos.z;
 			}
 
-			//총알 위치 업데이트.
-			//if (bulletVector.size() != 0)
-			//{
-			//	for (int i = 0; i < bulletVector.size(); ++i)
-			//	{
-			//	}
-			//}
+			//cout << "BulletVEctor 1: " << bulletVector.size() << endl;
+			//총알 위치 업데이트
+			if (bulletVector.size() != 0)
+			{
+				for (bulletIter = bulletVector.begin(); bulletIter != bulletVector.end(); ++bulletIter)
+				{
+					bulletIter->BulletPos.x += bulletIter->BulletDirection.x * (float)20;
+					bulletIter->BulletPos.y += bulletIter->BulletDirection.y * (float)20;
+					bulletIter->BulletPos.z += bulletIter->BulletDirection.z * (float)20;
+				}
+			}
+			//총알과 몬스터 충돌체크
+
+			//cout << "BulletVEctor 2: " << bulletVector.size() << endl;
+			if (bulletVector.size() != 0)
+			{
+				for (monsterIter = monsterVector.begin(); monsterIter != monsterVector.end(); ++monsterIter)
+				{
+					for (bulletIter = bulletVector.begin(); bulletIter != bulletVector.end(); ++bulletIter)
+					{
+						if (CollisionBulletWithMonster(bulletIter->BulletPos, monsterIter->MonsterPos))
+						{
+							cout << "몬스터 충돌 " << endl;
+							monsterIter->hp -= 1;
+							bulletVector.erase(bulletIter);
+							bulletIter = bulletVector.begin();
+							if (monsterIter->hp == 0)
+							{
+								if (bulletIter->bulletOwner == 1)
+									player1KillCount += 1;
+								else if (bulletIter->bulletOwner == 2)
+									player2KillCount += 1;
+
+								cout << "플킬1 : " << player1KillCount << endl;
+								cout << "플킬2 : " << player2KillCount << endl;
+								monsterIter->MonsterPos.y = -300;	
+							}
+							
+							if (bulletVector.size() == 0)
+								break;
+						}
+					}
+				}
+			}
+			//총알과 장애물 충돌체크
+
+			//cout << "BulletVEctor 3 : " << bulletVector.size() << endl;
+			if (bulletVector.size() != 0)
+			{
+
+				for (conIter = conVector.begin(); conIter != conVector.end(); ++conIter)
+				{
+					for (bulletIter = bulletVector.begin(); bulletIter != bulletVector.end(); ++bulletIter)
+					{
+						if (CollisionBulletWithObstacle(bulletIter->BulletPos, conIter->position))
+						{
+							bulletVector.erase(bulletIter);
+							bulletIter = bulletVector.begin();
+							if (bulletVector.size() == 0)
+								break;
+						}
+					}
+				}
+			}
+
+			//cout << "BulletVEctor : 4" << bulletVector.size() << endl;
+			//총알과 맵 충돌체크
+			if (bulletVector.size() != 0)
+			{
+
+				for (bulletIter = bulletVector.begin(); bulletIter != bulletVector.end(); ++bulletIter)
+				{
+					if (CollisionBulletWithMap(bulletIter->BulletPos))
+					{
+						bulletVector.erase(bulletIter);
+						bulletIter = bulletVector.begin();
+						if (bulletVector.size() == 0)
+							break;
+					}
+				}
+			}
+			if ((player1KillCount + player2KillCount) == 10)
+			{
+				changeGameScene.type = DataType::SCENE;
+				changeGameScene.SceneState = SceneList::RESULT;
+				for (int i = 0; i < 2; ++i)
+				{
+					retval = send(global_client_sock[i], (char*)&changeGameScene, sizeof(SceneInfo), 0);
+
+				}
+			}
+
+			//내일 수정
+		
 
 			for (int i = 0; i < 2; ++i)
 			{
-				retval = send(global_client_sock[i], (char*)&packet, sizeof(SendPacket), 0);
+				retval = send(global_client_sock[i], (char*)&sendPacket, sizeof(SendPacket), 0);
 				if (retval == SOCKET_ERROR)
 				{
 					err_display("send1()");
@@ -335,17 +431,28 @@ DWORD WINAPI ThreadFunc1(LPVOID param)
 			}
 
 			// 맵 충돌
-			printf("Before : X : %f , z : %f \n", recvPacket.playerPos.x, recvPacket.playerPos.z);
+			//printf("Before : X : %f , z : %f \n", recvPacket.playerPos.x, recvPacket.playerPos.z);
 			CollisionMapWithPlayer(recvPacket.playerPos);
-			printf("After  : X : %f , z : %f \n", recvPacket.playerPos.x, recvPacket.playerPos.z);
+			CollisionContainerWithPlayer(recvPacket.playerPos);
+			//printf("After  : X : %f , z : %f \n", recvPacket.playerPos.x, recvPacket.playerPos.z);
 			//서버의 플레이어 벡터의 값 초기화
 			playerVector[0].PlayerPos.x = recvPacket.playerPos.x;
 			playerVector[0].PlayerPos.z = recvPacket.playerPos.z;
 
 			//데이터패킷에 값 초기화
-			packet.player1.playerPos = recvPacket.playerPos;
-			packet.player1.playerCam = recvPacket.playerCam;
-			
+			sendPacket.player1.playerPos = recvPacket.playerPos;
+			sendPacket.player1.playerCam = recvPacket.playerCam;
+
+			if (recvPacket.makeBullet)
+			{
+				BulletInfo tempInfo;
+				tempInfo.BulletPos = recvPacket.bulletPosition;
+				tempInfo.BulletDirection = recvPacket.bulletDirection;
+				tempInfo.bulletOwner = 1;
+
+				bulletVector.push_back(tempInfo);
+			}
+
 			nextTime = clock() + leftTime;
 		}
 		SetEvent(hEventPlayerThread1);
@@ -379,14 +486,24 @@ DWORD WINAPI ThreadFunc2(LPVOID param)
 
 			// 맵 충돌
 			CollisionMapWithPlayer(recvPacket.playerPos);
-			
+			CollisionContainerWithPlayer(recvPacket.playerPos);
 			// 서버의 플레이어벡터의 값 초기화
 			playerVector[1].PlayerPos.x = recvPacket.playerPos.x;
 			playerVector[1].PlayerPos.z = recvPacket.playerPos.z;
 
 			//샌드 데이터패킷의 값 초기화.
-			packet.player2.playerPos = recvPacket.playerPos;
-			packet.player2.playerCam = recvPacket.playerCam; 
+			sendPacket.player2.playerPos = recvPacket.playerPos;
+			sendPacket.player2.playerCam = recvPacket.playerCam;
+
+			if (recvPacket.makeBullet)
+			{
+				BulletInfo tempInfo;
+				tempInfo.BulletPos = recvPacket.bulletPosition;
+				tempInfo.BulletDirection = recvPacket.bulletDirection;
+				tempInfo.bulletOwner = 2;
+
+				bulletVector.push_back(tempInfo);
+			}
 
 			nextTime = clock() + leftTime;
 		}
@@ -394,37 +511,37 @@ DWORD WINAPI ThreadFunc2(LPVOID param)
 	}
 	return 0;
 }
-bool CollisionBulletWithMonster(BulletInfo & bullet, MonsterInfo& monster)
+bool CollisionBulletWithMonster(Vec3 & bullet, Vec3& monster)
 {
 	return(
-		bullet.BulletPos.x + 1 > monster.MonsterPos.x - 30 &&
-		bullet.BulletPos.x - 1 < monster.MonsterPos.x + 30 &&
-		bullet.BulletPos.y + 1 > monster.MonsterPos.y - 55 &&
-		bullet.BulletPos.y - 1 < monster.MonsterPos.y + 55 &&
-		bullet.BulletPos.z + 1 > monster.MonsterPos.z - 15 &&
-		bullet.BulletPos.z - 1 < monster.MonsterPos.z + 15
+		bullet.x + 1 > monster.x - 30 &&
+		bullet.x - 1 < monster.x + 30 &&
+		bullet.y + 1 > monster.y - 55 &&
+		bullet.y - 1 < monster.y + 55 &&
+		bullet.z + 1 > monster.z - 15 &&
+		bullet.z - 1 < monster.z + 15
 		);
 }
-bool CollisionBulletWithObstacle(BulletInfo&bullet, ContainerInfo& container)
+bool CollisionBulletWithObstacle(Vec3 &bullet, Vec3& container)
 {
 	return(
-		bullet.BulletPos.x + 1 > container.position.x - 128 &&
-		bullet.BulletPos.x - 1 < container.position.x + 128 &&
-		bullet.BulletPos.y + 1 > container.position.y - 128 &&
-		bullet.BulletPos.y - 1 < container.position.y + 128 &&
-		bullet.BulletPos.z + 1 > container.position.z - 256 &&
-		bullet.BulletPos.z - 1 < container.position.z + 256
+		bullet.x + 1 > container.x - 128 &&
+		bullet.x - 1 < container.x + 128 &&
+		bullet.y + 1 > container.y - 128 &&
+		bullet.y - 1 < container.y + 128 &&
+		bullet.z + 1 > container.z - 256 &&
+		bullet.z - 1 < container.z + 256
 		);
 }
-bool CollisionBulletWithMap(BulletInfo& bullet)
+bool CollisionBulletWithMap(Vec3& bullet)
 {
-	if (bullet.BulletPos.x + 1 > 2000)
+	if (bullet.x + 1 > 2000)
 		return true;
-	if (bullet.BulletPos.x - 1 < -2000)
+	if (bullet.x - 1 < -2000)
 		return true;
-	if (bullet.BulletPos.y + 1 > 2000)
+	if (bullet.z + 1 > 2000)
 		return true;
-	if (bullet.BulletPos.y - 1 < -2000)
+	if (bullet.z - 1 < -2000)
 		return true;
 
 	return false;
@@ -453,15 +570,52 @@ bool CollisionMapWithPlayer(Vec2 & playerPos)
 		playerPos.x += 30;
 		return true;
 	}
-	if (playerPos.z + 30>2000)
+	if (playerPos.z + 30 > 2000)
 	{
 		playerPos.z -= 30;
 		return true;
 	}
-	if (playerPos.z + 30<2000)
+	if (playerPos.z - 30 < -2000)
 	{
 		playerPos.z += 30;
 		return true;
 	}
+	return false;
+}
+
+bool CollisionContainerWithPlayer(Vec2 &playerPos)
+{
+	if (playerPos.x > -100.0f && playerPos.x < 100.0f &&
+		playerPos.z > 750.0f && playerPos.z < 1250.0f)
+	{
+		playerPos.x = 0.0f;
+		playerPos.z = 1900.0f;
+		return true;
+	}
+
+	if (playerPos.x > 1400.0f && playerPos.x < 1600.0f &&
+		playerPos.z > -250.0f && playerPos.z < 250.0f)
+	{
+		playerPos.x = 0.0f;
+		playerPos.z = 1900.0f;
+		return true;
+	}
+
+	if (playerPos.x > -100.0f && playerPos.x < 100.0f &&
+		playerPos.z > -1250.0f && playerPos.z < -750.0f)
+	{
+		playerPos.x = 0.0f;
+		playerPos.z = 1900.0f;
+		return true;
+	}
+
+	if (playerPos.x > -1600.0f && playerPos.x < -1400.0f &&
+		playerPos.z > -250.0f && playerPos.z < 250.0f)
+	{
+		playerPos.x = 0.0f;
+		playerPos.z = 1900.0f;
+		return true;
+	}
+
 	return false;
 }
