@@ -112,6 +112,7 @@ struct SendPacket
 										 //Vec3   player1Bullets[5];            //60         
 										 //Vec3   player2Bullets[5];            //60
 										 //112
+	bool gameOver;
 };
 struct RecvPacket
 {

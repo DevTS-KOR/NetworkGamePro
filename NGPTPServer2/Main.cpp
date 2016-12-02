@@ -161,11 +161,18 @@ int main(int argc, char* argv[])
 
 	MonsterUpdate();
 
-	cout << "쓰레드 2개 종료?" << endl;
+
+	cout << "Game End" << endl;
+
 	WaitForSingleObject(hThreadHandle1, INFINITE);
 	WaitForSingleObject(hThreadHandle2, INFINITE);
-	cout << "쓰레드 2개 종료!" << endl;
+	
 
+	TerminateThread(hThreadHandle1, 0);
+	TerminateThread(hThreadHandle2, 0);
+	CloseHandle(hThreadHandle1);
+	CloseHandle(hThreadHandle2);
+	cout << "쓰레드 2개 종료!" << endl;
 	CloseHandle(hEventMonsterUpdate);
 	CloseHandle(hEventPlayerThread1);
 	CloseHandle(hEventPlayerThread2);
@@ -241,6 +248,8 @@ void Init()
 	sendPacket.player2.playerPos.x = playerVector[1].PlayerPos.x;
 	sendPacket.player2.playerPos.z = playerVector[1].PlayerPos.z;
 
+	sendPacket.gameOver = false;
+
 }
 void MonsterUpdate()
 {
@@ -274,7 +283,33 @@ void MonsterUpdate()
 		nowTime = std::clock();
 		if (nowTime > nextTime)
 		{
-			
+			///GameOver 조건
+			if ((player1KillCount + player2KillCount) == 10)
+			{
+				sendPacket.gameOver = true;
+				for (int i = 0; i < 2; ++i)
+				{
+					retval = send(global_client_sock[i], (char*)&sendPacket, sizeof(SendPacket), 0);
+					if (retval == SOCKET_ERROR)
+					{
+						err_display("send()");
+					}
+				}
+				
+				retval = send(global_client_sock[0], (char*)&player1KillCount, sizeof(int), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("send()");
+				}
+
+				retval = send(global_client_sock[1], (char*)&player2KillCount, sizeof(int), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("send()");
+				}
+				
+				return;
+			}
 
 			//몬스터 위치 업데이트
 			for (int i = 0; i < 10; ++i)
