@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
 
 	WaitForSingleObject(hThreadHandle1, INFINITE);
 	WaitForSingleObject(hThreadHandle2, INFINITE);
-	
+
 
 	TerminateThread(hThreadHandle1, 0);
 	TerminateThread(hThreadHandle2, 0);
@@ -243,10 +243,12 @@ void Init()
 	sendPacket.player1.playerIndex = 1;
 	sendPacket.player1.playerPos.x = playerVector[0].PlayerPos.x;
 	sendPacket.player1.playerPos.z = playerVector[0].PlayerPos.z;
+	sendPacket.player1.Killcount = 0;
 
 	sendPacket.player2.playerIndex = 2;
 	sendPacket.player2.playerPos.x = playerVector[1].PlayerPos.x;
 	sendPacket.player2.playerPos.z = playerVector[1].PlayerPos.z;
+	sendPacket.player2.Killcount = 0;
 
 	sendPacket.gameOver = false;
 
@@ -295,19 +297,7 @@ void MonsterUpdate()
 						err_display("send()");
 					}
 				}
-				
-				retval = send(global_client_sock[0], (char*)&player1KillCount, sizeof(int), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send()");
-				}
 
-				retval = send(global_client_sock[1], (char*)&player2KillCount, sizeof(int), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send()");
-				}
-				
 				return;
 			}
 
@@ -356,15 +346,20 @@ void MonsterUpdate()
 							if (monsterIter->hp == 0)
 							{
 								if (bulletIter->bulletOwner == 1)
+								{
 									player1KillCount += 1;
+									sendPacket.player1.Killcount = player1KillCount;
+								}
 								else if (bulletIter->bulletOwner == 2)
+								{
 									player2KillCount += 1;
-
+									sendPacket.player2.Killcount = player2KillCount;
+								}
 								cout << "플킬1 : " << player1KillCount << endl;
 								cout << "플킬2 : " << player2KillCount << endl;
-								monsterIter->MonsterPos.y = -300;	
+								monsterIter->MonsterPos.y = -300;
 							}
-							
+
 							if (bulletVector.size() == 0)
 								break;
 						}
@@ -420,7 +415,7 @@ void MonsterUpdate()
 			}
 
 			//내일 수정
-		
+
 
 			for (int i = 0; i < 2; ++i)
 			{

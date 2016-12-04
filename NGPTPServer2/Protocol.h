@@ -101,7 +101,7 @@ struct playerSend
 	int      playerIndex;               //4
 	Vec2   playerPos;                  //8
 	float   playerCam;                  //4
-										//16
+	int Killcount;
 };
 
 struct SendPacket
